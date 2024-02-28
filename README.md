@@ -21,9 +21,8 @@ pip install -r requirements.txt
 ### Roadmap
 
 # Confidentiality and safety
-[ ] Need to emphasise it is an offline program for personal/institutional use and highlight the anonymisation feature
-
-[ ] Option to encrypt/password protect output files would be a bonus but not necessary
+[x] Need to emphasise it is an offline program for personal/institutional use and highlight the anonymisation feature
+[x] Option to encrypt/password protect output files would be a bonus but not necessary
 
 # Data input
 [ ] Convert Excel files/sheets into correct format for processing or signpost the user how to do this

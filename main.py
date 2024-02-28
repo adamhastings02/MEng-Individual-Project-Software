@@ -7,12 +7,12 @@ from PyQt6 import QtWidgets, uic, QtCore
 from PyQt6.QtWidgets import *
 from PyQt6.QtGui import QTextCharFormat, QTextCursor, QColor, QFont
 from PyQt6.QtCore import Qt, QTimer
-from MainWindow import Ui_MainWindow
-from Loading import Ui_Loading
-from Login import Ui_Login
-from Help import Ui_Help
-from Mesh import Ui_Mesh
-from Dataselect import Ui_Data
+from guis.MainWindow import Ui_MainWindow
+from guis.Loading import Ui_Loading
+from guis.Login import Ui_Login
+from guis.Help import Ui_Help
+from guis.Mesh import Ui_Mesh
+from guis.Dataselect import Ui_Data
 from time import sleep
 import pandas as pd 
 import numpy as np
@@ -121,7 +121,7 @@ def data_retrieval(dataset):
     """
     # Data imports
     file_path = dataset
-    df_data0 = pd.read_csv(file_path)
+    df_data0 = pd.read_csv('data/'+file_path)
     #df_data3 = df_data0.sample(n=100)
     df_data0.fillna('', inplace=True)
     
@@ -375,7 +375,7 @@ class MeshWindow(QtWidgets.QMainWindow, Ui_Mesh):
     
     def search_clicked(self):
         text = self.lineEdit_user.text()
-        df = pd.read_csv('synonyms.csv')
+        df = pd.read_csv('data/synonyms.csv')
         df.fillna('', inplace=True)
         result = df[df['Term'] == text.capitalize()]
         value = result.iloc[:,3:]

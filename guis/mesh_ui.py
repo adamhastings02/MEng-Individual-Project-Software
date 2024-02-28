@@ -1,4 +1,4 @@
-# Form implementation generated from reading ui file 'c:\Users\Adam\OneDrive - University of Leeds\University Of Leeds Year 4\5870M - Individual Project\Python Files\mesh.ui'
+# Form implementation generated from reading ui file 'c:\Users\Adam\OneDrive - University of Leeds\University Of Leeds Year 4\5870M - Individual Project\Python Files\guis\mesh.ui'
 #
 # Created by: PyQt6 UI code generator 6.4.2
 #

@@ -1,4 +1,4 @@
-# Form implementation generated from reading ui file 'c:\Users\Adam\OneDrive - University of Leeds\University Of Leeds Year 4\5870M - Individual Project\Python Files\loading.ui'
+# Form implementation generated from reading ui file 'c:\Users\Adam\OneDrive - University of Leeds\University Of Leeds Year 4\5870M - Individual Project\Python Files\guis\loading.ui'
 #
 # Created by: PyQt6 UI code generator 6.4.2
 #
@@ -36,7 +36,7 @@ class Ui_MainWindow(object):
         self.leedslogo = QtWidgets.QLabel(parent=self.centralwidget)
         self.leedslogo.setGeometry(QtCore.QRect(30, 440, 311, 91))
         self.leedslogo.setText("")
-        self.leedslogo.setPixmap(QtGui.QPixmap("c:\\Users\\Adam\\OneDrive - University of Leeds\\University Of Leeds Year 4\\5870M - Individual Project\\Python Files\\leeds2.png"))
+        self.leedslogo.setPixmap(QtGui.QPixmap("c:\\Users\\Adam\\OneDrive - University of Leeds\\University Of Leeds Year 4\\5870M - Individual Project\\Python Files\\guis\\leeds2.png"))
         self.leedslogo.setScaledContents(True)
         self.leedslogo.setObjectName("leedslogo")
         self.nhslogo = QtWidgets.QLabel(parent=self.centralwidget)

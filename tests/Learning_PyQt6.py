@@ -11,7 +11,7 @@ from PyQt6.QtCore import Qt
 
 # Custom Methods
 # self.pushButton.clicked.connect(self.the_button_was_clicked)
-from MainWindow import Ui_MainWindow
+from guis.MainWindow import Ui_MainWindow
 import pandas as pd 
 import numpy as np
 import matplotlib.pyplot as plt

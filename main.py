@@ -7,9 +7,9 @@ from PyQt6 import QtWidgets, uic, QtCore
 from PyQt6.QtWidgets import *
 from PyQt6.QtGui import QTextCharFormat, QTextCursor, QColor, QFont
 from PyQt6.QtCore import Qt, QTimer
-from guis.MainWindow import Ui_MainWindow
+from guis.mainwindow_ui import Ui_MainWindow
 from guis.loading_ui import Ui_Loading
-from guis.Login import Ui_Login
+from guis.login_ui import Ui_Login
 from guis.Help import Ui_Help
 from guis.Mesh import Ui_Mesh
 from guis.Dataselect import Ui_Data
@@ -193,53 +193,85 @@ class TableModel(QtCore.QAbstractTableModel):
                 return str(self._data.index[section])
 
 class LoadWindow(QtWidgets.QMainWindow, Ui_Loading):
+    """
+    The first window which appears when executing the app, which is a 
+    basic loading screen, with a title, progress bar, logos and supporting text
+    Approx loading time (0.75*5) = 3.75s (can be changed on timer start line) 
+    """
     def __init__(self, *args, obj=None, **kwargs):
+        """
+        Function to inistialise loading window
+        """
         super(LoadWindow, self).__init__(*args, **kwargs) 
-        self.setupUi(self)
-        self.progress = 0
-        self.timer = QTimer()
-        self.timer.timeout.connect(self.update_progress)
-        self.timer.start(750)
+        self.setupUi(self)                              # Setup UI
+        self.progress = 0                               # Starting progress = 0
+        self.timer = QTimer()                           # Create timer object
+        self.timer.timeout.connect(self.update_progress)# Connect timer timeout to progress update function 
+        self.timer.start(750)                           # 750ms timer for each progress increment
         
     def update_progress(self):
-        self.progress += 20
-        self.progressBar.setValue(self.progress)
+        """
+        Function to update the progress of the progress bar 
+        """
+        self.progress += 20                             # Increment progress by 20
+        self.progressBar.setValue(self.progress)        # Assign new value to progress bar
 
-        if self.progress >= 100:
-            self.timer.stop()
+        if self.progress >= 100:                        # If progress bar is full (i.e., 100%)
+            self.timer.stop()                           # Stop the timer
             self.lab_loading.setText("Loading completed.")
-            self.close()
+            self.close()                                # Close the window once complete
 
 class LoginWindow(QtWidgets.QMainWindow, Ui_Login):
+    """
+    The second window which launches after the loading screen has finished
+    A basic login system, which is linked to a SQLite database
+    Options to login, quit, and a forgot my password feature
+    """
     def __init__(self, *args, obj=None, **kwargs):
+        """
+        Function to inistialise the login window
+        """
         super(LoginWindow, self).__init__(*args, **kwargs) 
-        self.setupUi(self)
-        self.but_login.clicked.connect(self.login_button_clicked)
-        self.but_forgot.clicked.connect(self.forgot_button_clicked)
-        init_errors(self)
+        self.setupUi(self)                                          # Setup UI
+        self.but_login.clicked.connect(self.login_button_clicked)   # Connect login button to function
+        self.but_forgot.clicked.connect(self.forgot_button_clicked) # Connect forgot password button to function
+        self.but_quit.clicked.connect(self.quit_button_clicked)     # Connect quit button to function
+        init_errors(self)                                           # Initialise the error messages
     
     def login_button_clicked(self):
-        username = self.lineEdit_user.text()
-        password = self.lineEdit_pass.text()
-        conn = sqlite3.connect("UserManagement.db")
-        c = conn.cursor()
+        """
+        Function which gets called when the login button is pressed
+        """
+        username = self.lineEdit_user.text()          # Extract username from lineEdit   
+        password = self.lineEdit_pass.text()          # Extract password from lineEdit
+        conn = sqlite3.connect("UserManagement.db")   # Connect to the user management database
+        c = conn.cursor()                             # Setup a cursor, 'c'
         c.execute("SELECT * FROM users WHERE username=:username", {"username":username})
-        user = c.fetchone()
-        global login_success
-        login_success = 0
+        user = c.fetchone()                           # Select 1 value from database with matching username
+        global login_success                          # Global setup to control if main window is displayed
+        login_success = 0                           
         if user != None and user[1] == username and checkpw(password.encode('utf-8'), user[2]):
-            login_success = 1
-            self.close()
+            login_success = 1                         # If a user is found, and has a matching username, and whose password
+            self.close()                              # corresponds to that username, login_sucess = HIGH and window is closed
         else:
-            login_success = 0
-            self.login_error.exec()
-            self.lineEdit_user.clear()
-            self.lineEdit_pass.clear()
-            self.lineEdit_user.setFocus()
+            login_success = 0                         # Otherwise, login has failed
+            self.login_error.exec()                   # Display login failure dialogue box
+            self.lineEdit_user.clear()                # Clear username line
+            self.lineEdit_pass.clear()                # Clear password line
+            self.lineEdit_user.setFocus()             # Set mouse cursor to usename line
    
     def forgot_button_clicked(self):
-        self.help = HelpWindow()
+        """
+        Function which gets called when the forgot password button is pressed
+        """
+        self.help = HelpWindow()   # Create and display the help window
         self.help.show()
+
+    def quit_button_clicked(self):
+        """
+        Function which gets called when the quit button is pressed
+        """
+        app.quit()  # Terminate the app
 
 class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, *args, obj=None, **kwargs):
@@ -313,7 +345,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             # Get the data of the selected cell
             data = self.table_results.model().data(index, role=Qt.ItemDataRole.DisplayRole)
             # Find the transcription matching the description
-            df = pd.read_csv('transcripts.csv')
+            df = pd.read_csv('data/transcripts.csv')
             result = df[df['sample_name'] == data]
             value = result['transcription']
             text = value.iloc[0]

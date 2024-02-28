@@ -1,0 +1,8 @@
+<RCC>
+  <qresource prefix="nhs">
+    <file>nhs.jpeg</file>
+  </qresource>
+  <qresource prefix="leeds">
+    <file>leeds.png</file>
+  </qresource>
+</RCC>

@@ -1,0 +1,39 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# ipython
+.ipynb_checkpoints/
+
+# Virtual environment
+venv/
+env/
+.venv/
+.ENV/
+
+# IDE-specific files and directories
+.vscode/
+.idea/
+.project
+.pydevproject
+
+# Log files
+*.log
+
+# User-specific files
+.history
+
+# User configuration files
+.gitconfig
+.bash_history
+
+# Editor backup files
+*~
+.#*
+
+# User specified
+corpora/
+figs/
+archive/

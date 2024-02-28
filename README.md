@@ -22,6 +22,7 @@ pip install -r requirements.txt
 
 # Confidentiality and safety
 [ ] Need to emphasise it is an offline program for personal/institutional use and highlight the anonymisation feature
+
 [ ] Option to encrypt/password protect output files would be a bonus but not necessary
 
 # Data input

@@ -9,7 +9,7 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 
 
-class Ui_MainWindow(object):
+class Ui_Loading(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(800, 612)
@@ -42,7 +42,7 @@ class Ui_MainWindow(object):
         self.nhslogo = QtWidgets.QLabel(parent=self.centralwidget)
         self.nhslogo.setGeometry(QtCore.QRect(510, 440, 271, 101))
         self.nhslogo.setText("")
-        self.nhslogo.setPixmap(QtGui.QPixmap(":/nhs/nhs.jpeg"))
+        self.nhslogo.setPixmap(QtGui.QPixmap("c:\\Users\\Adam\\OneDrive - University of Leeds\\University Of Leeds Year 4\\5870M - Individual Project\\Python Files\\guis\\nhs.jpeg"))
         self.nhslogo.setScaledContents(True)
         self.nhslogo.setObjectName("nhslogo")
         self.lab_loading = QtWidgets.QLabel(parent=self.centralwidget)
@@ -51,6 +51,18 @@ class Ui_MainWindow(object):
         font.setPointSize(12)
         self.lab_loading.setFont(font)
         self.lab_loading.setObjectName("lab_loading")
+        self.lab_info = QtWidgets.QLabel(parent=self.centralwidget)
+        self.lab_info.setGeometry(QtCore.QRect(240, 340, 401, 41))
+        font = QtGui.QFont()
+        font.setPointSize(11)
+        self.lab_info.setFont(font)
+        self.lab_info.setObjectName("lab_info")
+        self.lab_info_2 = QtWidgets.QLabel(parent=self.centralwidget)
+        self.lab_info_2.setGeometry(QtCore.QRect(220, 380, 451, 41))
+        font = QtGui.QFont()
+        font.setPointSize(11)
+        self.lab_info_2.setFont(font)
+        self.lab_info_2.setObjectName("lab_info_2")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(parent=MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 26))
@@ -68,3 +80,5 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.lab_program.setText(_translate("MainWindow", "NLP ReportGenius"))
         self.lab_loading.setText(_translate("MainWindow", "Loading..."))
+        self.lab_info.setText(_translate("MainWindow", "An offline NLP tool for examining medical reports"))
+        self.lab_info_2.setText(_translate("MainWindow", "For Personal / Institutional use only, with anonymisation"))

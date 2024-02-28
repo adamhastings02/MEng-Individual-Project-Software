@@ -8,7 +8,7 @@ from PyQt6.QtWidgets import *
 from PyQt6.QtGui import QTextCharFormat, QTextCursor, QColor, QFont
 from PyQt6.QtCore import Qt, QTimer
 from guis.MainWindow import Ui_MainWindow
-from guis.Loading import Ui_Loading
+from guis.loading_ui import Ui_Loading
 from guis.Login import Ui_Login
 from guis.Help import Ui_Help
 from guis.Mesh import Ui_Mesh
@@ -199,7 +199,7 @@ class LoadWindow(QtWidgets.QMainWindow, Ui_Loading):
         self.progress = 0
         self.timer = QTimer()
         self.timer.timeout.connect(self.update_progress)
-        self.timer.start(500)
+        self.timer.start(750)
         
     def update_progress(self):
         self.progress += 20

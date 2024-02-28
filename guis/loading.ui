@@ -93,7 +93,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="designer_images.qrc">:/nhs/nhs.jpeg</pixmap>
+     <pixmap>nhs.jpeg</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -117,6 +117,42 @@
      <string>Loading...</string>
     </property>
    </widget>
+   <widget class="QLabel" name="lab_info">
+    <property name="geometry">
+     <rect>
+      <x>240</x>
+      <y>340</y>
+      <width>401</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>11</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>An offline NLP tool for examining medical reports</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lab_info_2">
+    <property name="geometry">
+     <rect>
+      <x>220</x>
+      <y>380</y>
+      <width>451</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>11</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>For Personal / Institutional use only, with anonymisation</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -132,7 +168,6 @@
  </widget>
  <resources>
   <include location="designer_images.qrc"/>
-  <include location="../../../../../../Program Files (x86)/Qt Designer/designer_images.qrc"/>
  </resources>
  <connections/>
 </ui>

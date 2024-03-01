@@ -12,7 +12,9 @@ from guis.loading_ui import Ui_Loading
 from guis.login_ui import Ui_Login
 from guis.Help import Ui_Help
 from guis.Mesh import Ui_Mesh
+from guis.variables_ui import Ui_Variables
 from guis.Dataselect import Ui_Data
+from database import *
 from time import sleep
 import pandas as pd 
 import numpy as np
@@ -76,6 +78,14 @@ def init_errors(self):
     self.login_error.setIcon(QMessageBox.Icon.Critical)
     self.login_error.setWindowTitle('Login Information')
     self.login_error.setText('Login Failed! Please try again')
+
+    # Are you sure you wish to proceed? (General)
+    self.proceed = QMessageBox()
+    self.proceed.setIcon(QMessageBox.Icon.Critical)
+    self.proceed.setWindowTitle('Confirmation')
+    self.proceed.setText('Are you sure you wish to proceed?')
+    self.proceed.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+    self.proceed.setDefaultButton(QMessageBox.StandardButton.No) 
 
 def init_tooltips(self):
     """
@@ -146,7 +156,7 @@ def data_retrieval(dataset):
     
     return df_data2
 
-def manual_retrieval(self):
+#def manual_retrieval(self):
     """
     A function which obtains the expression that has been manually entered by the user
         
@@ -286,6 +296,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.but_help.clicked.connect(self.help_button_clicked)
         self.but_termfind.clicked.connect(self.term_button_clicked)
         self.but_and.clicked.connect(self.and_button_clicked)
+        self.but_variables.clicked.connect(self.variables_button_clicked)
         #init_tooltips(self)
         init_errors(self)
         init_shortcuts(self)
@@ -303,14 +314,25 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             data = data_retrieval(selected_dataset)
         # Retrieve the line, and if this is empty, then throw an error. Otherwise create expression object
         man = self.ent_manual.toPlainText()
+        conn = sqlite3.connect("UserManagement.db")                 # Connect to the user management database
+        c = conn.cursor()                                           # Setup a cursor, 'c'
+        c.execute("SELECT * FROM variables")
+        variables = c.fetchall()                                    # Select all values from database
+        for var, text in variables:
+            man = man.replace(var, text)
+        print(man)
+
         if man.strip() == "":
             self.manual_error.exec()
             return
         else:    
-            expr = manual_retrieval(self)
+            expr = Expression()
+            result = expr.parse_string(man)
         
+       
+
         # Search the results and filter the dataframe by values which are true under the expression
-        results = df_search(data, expr)
+        results = df_search(data, result)
         condition = results['term_found'] == True
         filtered_df = results[condition]
 
@@ -379,6 +401,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         updated_text = current_text + new_text
         self.ent_manual.setPlainText(updated_text)
 
+    def variables_button_clicked(self):
+        self.variables = VariablesWindow()
+        self.variables.show()
+
 class HelpWindow(QtWidgets.QMainWindow, Ui_Help):
     """
     This window appears after the 'Help' button is clicked.
@@ -444,6 +470,45 @@ class DataWindow(QtWidgets.QMainWindow, Ui_Data):
             self.tableView.resizeColumnsToContents()
         else:
             self.tableView.setModel(None)
+
+class VariablesWindow(QtWidgets.QMainWindow, Ui_Variables):
+    """
+    A window which launches after the variables button is clicked
+    A basic window with a table of preset variables
+    Additional feature to add a custom variable
+    """
+    def __init__(self, *args, obj=None, **kwargs):
+        """
+        Function to inistialise the variables window
+        """
+        super(VariablesWindow, self).__init__(*args, **kwargs) 
+        self.setupUi(self)                                          # Setup UI
+        self.but_create.clicked.connect(self.create_button_clicked) # Connect create button to function
+        init_errors(self)                                           # Initialise the error messages
+        conn = sqlite3.connect("UserManagement.db")                 # Connect to the user management database
+        c = conn.cursor()                                           # Setup a cursor, 'c'
+        c.execute("SELECT * FROM variables")
+        variables = c.fetchall()                                    # Select all values from database
+        data = pd.DataFrame(variables, columns = ['Variable Name', 'Query'])
+        self.model = TableModel(data)
+        self.table_results.setModel(self.model)
+        self.table_results.resizeColumnsToContents()
+                                                  
+    
+    def create_button_clicked(self):
+        """
+        Function which gets called when the create button is pressed
+        """
+        variable = self.lineEdit_var.text()          # Extract variable from lineEdit   
+        query = self.lineEdit_query.text()           # Extract query from lineEdit
+        response = self.proceed.exec()
+        if response == QMessageBox.StandardButton.Yes:
+            insert_variable(variable, query)
+            self.close()
+        else:
+            self.lineEdit_var.clear()
+            self.lineEdit_query.clear()           
+        
 
 # Execute the app
 app = QtWidgets.QApplication(sys.argv)

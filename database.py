@@ -7,6 +7,9 @@ from bcrypt import hashpw, gensalt, checkpw
 conn = sqlite3.connect('UserManagement.db')
 c = conn.cursor()
 
+#####################
+####### USERS #######
+#####################
 # Create the table, with IF NOT EXISTS setting to prevent errors
 c.execute("""CREATE TABLE IF NOT EXISTS users(
            ID integer PRIMARY KEY AUTOINCREMENT,
@@ -23,7 +26,27 @@ def insert_user(username, password):
     with conn:
         c.execute("INSERT INTO users VALUES (NULL, :username, :password)",
                   {'username':username, 'password':password})
-
-
+        
 # To insert a user, replace the values in the curly brackets with the new user details
 #insert_user("{Username}", (hashpw("{Password}".encode('utf-8'), gensalt())))
+
+#######################
+###### VARIABLES ######
+#######################
+# Create the table, with IF NOT EXISTS setting to prevent errors
+c.execute("""CREATE TABLE IF NOT EXISTS variables(
+           variable varchar (4)  PRIMARY KEY NOT NULL,
+           search varchar (127) NOT NULL
+           ) """
+           )
+# Variable as the primary key, which is the shortcut variable a user can use to implement a longer search
+# Search is a 63 bit Variable Character, and it cannot be empty. This is the custom search
+        
+def insert_variable(variable, search):        
+    # Function to insert a variable. NULL for ID, and then arguments get passed to INSERT statement
+    with conn:
+        c.execute("INSERT INTO variables VALUES (:variable, :search)",
+                  {'variable':variable, 'search':search})
+
+#insert_variable("gb1","gastric OR bypass AND obes*")
+#insert_variable("cc1","circumcision AND peni* AND stone")

@@ -297,6 +297,16 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.but_termfind.clicked.connect(self.term_button_clicked)
         self.but_and.clicked.connect(self.and_button_clicked)
         self.but_variables.clicked.connect(self.variables_button_clicked)
+        self.but_or.clicked.connect(self.or_button_clicked)
+        self.but_not.clicked.connect(self.not_button_clicked)
+        self.but_except.clicked.connect(self.except_button_clicked)
+        self.but_custom.clicked.connect(self.custom_button_clicked)
+        self.but_star.clicked.connect(self.star_button_clicked)
+        self.but_q.clicked.connect(self.q_button_clicked)
+        self.but_und.clicked.connect(self.und_button_clicked)
+        self.but_quit.clicked.connect(self.quit_button_clicked)
+        self.but_near.clicked.connect(self.near_button_clicked)
+
         #init_tooltips(self)
         init_errors(self)
         init_shortcuts(self)
@@ -320,7 +330,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         variables = c.fetchall()                                    # Select all values from database
         for var, text in variables:
             man = man.replace(var, text)
-        print(man)
 
         if man.strip() == "":
             self.manual_error.exec()
@@ -395,15 +404,62 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.help.show()
     
     def and_button_clicked(self):
-        self.ent_manual.setFocus()
         new_text = " AND "
         current_text = self.ent_manual.toPlainText()
         updated_text = current_text + new_text
         self.ent_manual.setPlainText(updated_text)
 
+    def or_button_clicked(self):
+        new_text = " OR "
+        current_text = self.ent_manual.toPlainText()
+        updated_text = current_text + new_text
+        self.ent_manual.setPlainText(updated_text)
+
+    def not_button_clicked(self):
+        new_text = " NOT "
+        current_text = self.ent_manual.toPlainText()
+        updated_text = current_text + new_text
+        self.ent_manual.setPlainText(updated_text)
+
+    def except_button_clicked(self):
+        new_text = " EXCEPT "
+        current_text = self.ent_manual.toPlainText()
+        updated_text = current_text + new_text
+        self.ent_manual.setPlainText(updated_text)
+
+    def custom_button_clicked(self):
+        pass
+
+    def star_button_clicked(self):
+        new_text = "* "
+        current_text = self.ent_manual.toPlainText()
+        updated_text = current_text + new_text
+        self.ent_manual.setPlainText(updated_text)
+
+    def q_button_clicked(self):
+        new_text = "? "
+        current_text = self.ent_manual.toPlainText()
+        updated_text = current_text + new_text
+        self.ent_manual.setPlainText(updated_text)
+
+    def und_button_clicked(self):
+        new_text = "_ "
+        current_text = self.ent_manual.toPlainText()
+        updated_text = current_text + new_text
+        self.ent_manual.setPlainText(updated_text)
+    
+    def quit_button_clicked(self):
+        app.quit()
+
     def variables_button_clicked(self):
         self.variables = VariablesWindow()
         self.variables.show()
+
+    def near_button_clicked(self):
+        new_text = " NEAR "
+        current_text = self.ent_manual.toPlainText()
+        updated_text = current_text + new_text
+        self.ent_manual.setPlainText(updated_text)
 
 class HelpWindow(QtWidgets.QMainWindow, Ui_Help):
     """

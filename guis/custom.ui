@@ -6,47 +6,41 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>808</width>
-    <height>406</height>
+    <width>967</width>
+    <height>859</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: beige;</string>
+   <string notr="true">background-color: #F5F5DC;</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QLabel" name="lab_program">
+   <widget class="QLabel" name="lab_create">
     <property name="geometry">
      <rect>
-      <x>310</x>
-      <y>-10</y>
-      <width>171</width>
-      <height>61</height>
+      <x>50</x>
+      <y>600</y>
+      <width>301</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>24</pointsize>
-      <weight>50</weight>
-      <bold>false</bold>
-      <underline>false</underline>
+      <pointsize>12</pointsize>
      </font>
     </property>
     <property name="text">
-     <string>Login</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
+     <string>Or, create a new custom search:</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit_user">
+   <widget class="QLineEdit" name="lineEdit_query">
     <property name="geometry">
      <rect>
-      <x>330</x>
-      <y>90</y>
-      <width>421</width>
+      <x>50</x>
+      <y>670</y>
+      <width>881</width>
       <height>41</height>
      </rect>
     </property>
@@ -59,71 +53,35 @@
      <string notr="true">border: 1px solid black;</string>
     </property>
     <property name="maxLength">
-     <number>32</number>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lab_user">
-    <property name="geometry">
-     <rect>
-      <x>40</x>
-      <y>90</y>
-      <width>271</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>12</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>Please enter your username:</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lab_pass">
-    <property name="geometry">
-     <rect>
-      <x>40</x>
-      <y>160</y>
-      <width>271</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>12</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>Please enter your password:</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEdit_pass">
-    <property name="geometry">
-     <rect>
-      <x>330</x>
-      <y>160</y>
-      <width>421</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>12</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">border: 1px solid black;</string>
+     <number>127</number>
     </property>
     <property name="echoMode">
-     <enum>QLineEdit::Password</enum>
+     <enum>QLineEdit::Normal</enum>
     </property>
    </widget>
-   <widget class="QPushButton" name="but_login">
+   <widget class="QLabel" name="lab_variables">
     <property name="geometry">
      <rect>
-      <x>350</x>
-      <y>220</y>
+      <x>50</x>
+      <y>100</y>
+      <width>431</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Highlight the row of the desired custom search:</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="but_create">
+    <property name="geometry">
+     <rect>
+      <x>440</x>
+      <y>740</y>
       <width>93</width>
       <height>28</height>
      </rect>
@@ -134,43 +92,60 @@
      </font>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: lightgray;
-border: 1px solid black;</string>
+     <string notr="true">background-color: lightgrey;</string>
     </property>
     <property name="text">
-     <string>Login</string>
-    </property>
-    <property name="shortcut">
-     <string>Return</string>
+     <string>Create</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="but_forgot">
+   <widget class="QLabel" name="lab_program">
     <property name="geometry">
      <rect>
-      <x>310</x>
-      <y>260</y>
-      <width>171</width>
-      <height>28</height>
+      <x>250</x>
+      <y>20</y>
+      <width>421</width>
+      <height>61</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>10</pointsize>
+      <pointsize>24</pointsize>
+      <weight>50</weight>
+      <bold>false</bold>
+      <underline>false</underline>
      </font>
     </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: lightgrey;
-border: 1px solid black;</string>
-    </property>
     <property name="text">
-     <string>I forgot my password</string>
+     <string>Custom Search Viewer</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QPushButton" name="but_quit">
+   <widget class="QTableView" name="table_results">
     <property name="geometry">
      <rect>
-      <x>350</x>
-      <y>300</y>
+      <x>50</x>
+      <y>170</y>
+      <width>881</width>
+      <height>321</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: #F5F5DC;</string>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Plain</enum>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="but_insert">
+    <property name="geometry">
+     <rect>
+      <x>440</x>
+      <y>510</y>
       <width>93</width>
       <height>28</height>
      </rect>
@@ -181,11 +156,31 @@ border: 1px solid black;</string>
      </font>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: lightgray;
-border: 1px solid black;</string>
+     <string notr="true">background-color: lightgrey;</string>
     </property>
     <property name="text">
-     <string>Quit</string>
+     <string>Insert</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="but_delete">
+    <property name="geometry">
+     <rect>
+      <x>840</x>
+      <y>510</y>
+      <width>93</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: #FFCCCC;</string>
+    </property>
+    <property name="text">
+     <string>Delete</string>
     </property>
    </widget>
   </widget>
@@ -194,7 +189,7 @@ border: 1px solid black;</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>808</width>
+     <width>967</width>
      <height>26</height>
     </rect>
    </property>

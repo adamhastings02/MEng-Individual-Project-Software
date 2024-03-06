@@ -14,6 +14,7 @@ from guis.Help import Ui_Help
 from guis.Mesh import Ui_Mesh
 from guis.variables_ui import Ui_Variables
 from guis.Dataselect import Ui_Data
+from guis.custom_ui import Ui_Custom
 from database import *
 from time import sleep
 import pandas as pd 
@@ -428,7 +429,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.ent_manual.setPlainText(updated_text)
 
     def custom_button_clicked(self):
-        pass
+        self.custom = CustomWindow()
+        self.custom.show()
 
     def star_button_clicked(self):
         new_text = "* "
@@ -527,6 +529,48 @@ class DataWindow(QtWidgets.QMainWindow, Ui_Data):
         else:
             self.tableView.setModel(None)
 
+class CustomWindow(QtWidgets.QMainWindow, Ui_Custom):
+    def __init__(self, *args, obj=None, **kwargs):
+        super(CustomWindow, self).__init__(*args, **kwargs) 
+        self.setupUi(self)
+        init_errors(self)                                           # Initialise the error messages
+        conn = sqlite3.connect("UserManagement.db")                 # Connect to the user management database
+        c = conn.cursor()                                           # Setup a cursor, 'c'
+        c.execute("SELECT * FROM searches")
+        variables = c.fetchall()                                    # Select all values from database
+        data = pd.DataFrame(variables, columns = ['Search'])
+        self.model = TableModel(data)
+        self.table_results.setModel(self.model)
+        self.table_results.resizeColumnsToContents()
+        self.but_create.clicked.connect(self.create_button_clicked) # Connect create button to function
+        self.but_delete.clicked.connect(self.delete_button_clicked) # Connect delete button to function
+        self.but_insert.clicked.connect(self.insert_button_clicked) # Connect insert button to function
+
+    def create_button_clicked(self):
+        """
+        Function which gets called when the create button is pressed
+        """ 
+        query = self.lineEdit_query.text()           # Extract query from lineEdit
+        response = self.proceed.exec()
+        if response == QMessageBox.StandardButton.Yes:
+            insert_search(query)
+            self.close()
+        else:
+            self.lineEdit_query.clear()
+            self.lineEdit_query.setFocus()  
+
+    def delete_button_clicked(self):
+        """
+        Function which gets called when the create button is pressed
+        """ 
+        query = self.lineEdit_query.text()          
+
+    def insert_button_clicked(self):
+        """
+        Function which gets called when the create button is pressed
+        """ 
+        query = self.lineEdit_query.text()          
+
 class VariablesWindow(QtWidgets.QMainWindow, Ui_Variables):
     """
     A window which launches after the variables button is clicked
@@ -564,7 +608,7 @@ class VariablesWindow(QtWidgets.QMainWindow, Ui_Variables):
         else:
             self.lineEdit_var.clear()
             self.lineEdit_query.clear()           
-        
+            self.lineEdit_var.setFocus()
 
 # Execute the app
 app = QtWidgets.QApplication(sys.argv)

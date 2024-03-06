@@ -28,7 +28,16 @@ def insert_user(username, password):
                   {'username':username, 'password':password})
         
 # To insert a user, replace the values in the curly brackets with the new user details
-#insert_user("{Username}", (hashpw("{Password}".encode('utf-8'), gensalt())))
+# Example:
+# insert_user("barry", (hashpw("qwerty".encode('utf-8'), gensalt())))
+        
+def remove_search(username):
+    # Function to remove a user based on its username
+    with conn:
+        c.execute("DELETE FROM users WHERE username = :username",
+                  {'username':username})
+# Example:        
+#remove_search("circumcision AND peni* AND stone")
 
 #######################
 ###### VARIABLES ######
@@ -48,5 +57,42 @@ def insert_variable(variable, search):
         c.execute("INSERT INTO variables VALUES (:variable, :search)",
                   {'variable':variable, 'search':search})
 
-#insert_variable("gb1","gastric OR bypass AND obes*")
+# Example:
 #insert_variable("cc1","circumcision AND peni* AND stone")
+        
+def remove_variable(variable):
+    # Function to remove a variable based on its variable name
+    with conn:
+        c.execute("DELETE FROM variables WHERE variable = :variable",
+                  {'variable':variable})
+
+# Example:        
+#remove_variable("cc1")
+
+########################
+####### SEARCHES #######
+########################
+        
+# Create the table, with IF NOT EXISTS setting to prevent errors
+c.execute("""CREATE TABLE IF NOT EXISTS searches(
+           search varchar NOT NULL
+           ) """
+           )
+# Variable as the primary key, which is the shortcut variable a user can use to implement a longer search
+# Search is a 63 bit Variable Character, and it cannot be empty. This is the custom search
+        
+def insert_search(search):        
+    # Function to insert a variable. NULL for ID, and then arguments get passed to INSERT statement
+    with conn:
+        c.execute("INSERT INTO searches VALUES (:search)",
+                  {'search':search})
+# Example:
+#insert_search("circumcision AND peni* AND stone")
+        
+def remove_search(search):
+    # Function to remove a variable based on its variable name
+    with conn:
+        c.execute("DELETE FROM searches WHERE search = :search",
+                  {'search':search})
+# Example:        
+#remove_search("circumcision AND peni* AND stone")

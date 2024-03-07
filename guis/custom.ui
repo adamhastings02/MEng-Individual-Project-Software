@@ -159,7 +159,7 @@
      <string notr="true">background-color: lightgrey;</string>
     </property>
     <property name="text">
-     <string>Insert</string>
+     <string>Copy</string>
     </property>
    </widget>
    <widget class="QPushButton" name="but_delete">

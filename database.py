@@ -31,13 +31,13 @@ def insert_user(username, password):
 # Example:
 # insert_user("barry", (hashpw("qwerty".encode('utf-8'), gensalt())))
         
-def remove_search(username):
+def remove_user(username):
     # Function to remove a user based on its username
     with conn:
         c.execute("DELETE FROM users WHERE username = :username",
                   {'username':username})
 # Example:        
-#remove_search("circumcision AND peni* AND stone")
+#remove_user("barry")
 
 #######################
 ###### VARIABLES ######

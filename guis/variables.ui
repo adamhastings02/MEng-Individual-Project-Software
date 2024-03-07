@@ -110,6 +110,9 @@
       <pointsize>12</pointsize>
      </font>
     </property>
+    <property name="styleSheet">
+     <string notr="true">border: 1px solid black;</string>
+    </property>
     <property name="maxLength">
      <number>4</number>
     </property>
@@ -127,6 +130,9 @@
      <font>
       <pointsize>12</pointsize>
      </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border: 1px solid black;</string>
     </property>
     <property name="maxLength">
      <number>127</number>
@@ -186,7 +192,8 @@
      </font>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: lightgrey;</string>
+     <string notr="true">background-color: lightgrey;
+border: 1px solid black;</string>
     </property>
     <property name="text">
      <string>Create</string>
@@ -207,7 +214,8 @@
      </font>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: #FFCCCC;</string>
+     <string notr="true">background-color: #FFCCCC;
+border: 1px solid black;</string>
     </property>
     <property name="text">
      <string>Delete Selected</string>

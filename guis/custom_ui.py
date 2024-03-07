@@ -93,5 +93,5 @@ class Ui_Custom(object):
         self.lab_variables.setText(_translate("MainWindow", "Highlight the row of the desired custom search:"))
         self.but_create.setText(_translate("MainWindow", "Create"))
         self.lab_program.setText(_translate("MainWindow", "Custom Search Viewer"))
-        self.but_insert.setText(_translate("MainWindow", "Insert"))
+        self.but_insert.setText(_translate("MainWindow", "Copy"))
         self.but_delete.setText(_translate("MainWindow", "Delete"))

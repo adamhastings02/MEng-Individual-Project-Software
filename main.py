@@ -1,5 +1,6 @@
 # Imports
 import sys
+import re
 import spacy
 import sqlite3
 from bcrypt import checkpw
@@ -61,6 +62,12 @@ def init_errors(self):
     self.manual_error.setIcon(QMessageBox.Icon.Critical)
     self.manual_error.setWindowTitle('Error')
     self.manual_error.setText('Please type something!')
+
+    # Error for duplicates
+    self.duplicate_error = QMessageBox()
+    self.duplicate_error.setIcon(QMessageBox.Icon.Critical)
+    self.duplicate_error.setWindowTitle('Error')
+    self.duplicate_error.setText('Duplicates Detected! Please merge any reports with matching CRIS Numbers')
 
     # Info pop-up for no records found after a search
     self.nothing_error = QMessageBox()
@@ -138,10 +145,8 @@ def data_retrieval(dataset):
     
 
     # RAW DATA TABLE
-    column_report = 'transcription'
-    column_description = 'description'
-    column_samplename = 'sample_name'
-    column_speciality = 'medical_speciality'
+    column_report = 'Report'
+    
 
     #CLEANED DATA
     df_data = clean_dataframe(df_data0, [column_report], 
@@ -171,7 +176,7 @@ def data_retrieval(dataset):
 
 def df_search(data, expr):
     df_candidate = data.copy() 
-    searched = search_dataframe(df_candidate, column='transcription', expression=expr, 
+    searched = search_dataframe(df_candidate, column='Report', expression=expr, 
     new_column_name='term_found', debug_column=True)
     return searched
 
@@ -309,7 +314,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.but_near.clicked.connect(self.near_button_clicked)
         self.check_anonymise.stateChanged.connect(self.anonymise_changed)
 
-        #init_tooltips(self)
         init_errors(self)
         init_shortcuts(self)
 
@@ -324,6 +328,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             return
         else:
             data = data_retrieval(selected_dataset)
+        
+        # Check for duplicate data
+        duplicates_exist = data['CRIS_No'].duplicated().any()
+        if duplicates_exist:
+            self.duplicate_error.exec()
+        else:
+            pass
+
         # Retrieve the line, and if this is empty, then throw an error. Otherwise create expression object
         man = self.ent_manual.toPlainText()
         conn = sqlite3.connect("UserManagement.db")                 # Connect to the user management database
@@ -340,26 +352,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             expr = Expression()
             result = expr.parse_string(man)
         
-       
-
         # Search the results and filter the dataframe by values which are true under the expression
         results = df_search(data, result)
         condition = results['term_found'] == True
         filtered_df = results[condition]
-
-        # Perform some data manipulation on the filtered dataframe to create a format valid for the TableModel 
-        individual_terms = []
         if len(filtered_df != 0):
-            items = list(filtered_df.to_records(index=False))
-            for i in items:
-                for j in i:
-                    individual_terms.append(j)
-            
-            result_matrix = [individual_terms[i:i+8][1:4] for i in range(0, len(individual_terms), 8)]
-
-            # Create the dataframe and send the contents to the table, with the allocated column headings
-            data = pd.DataFrame(result_matrix, columns = ['Description', 'Medical Speciality', 'Sample Name'])
-            self.model = TableModel(data)
+            self.model = TableModel(filtered_df)
             self.table_results.setModel(self.model)
             self.table_results.resizeColumnsToContents()
         else:
@@ -370,6 +368,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def expand_button_clicked(self):
         selected_items = self.table_results.selectedIndexes()
+        selected_dataset = self.comboBox.currentText()
         # Iterate over the selected indexes
         for index in selected_items:
             # Get the row and column index of each selected cell
@@ -378,24 +377,39 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             # Get the data of the selected cell
             data = self.table_results.model().data(index, role=Qt.ItemDataRole.DisplayRole)
             # Find the transcription matching the description
-            df = pd.read_csv('data/transcripts.csv')
-            result = df[df['sample_name'] == data]
-            value = result['transcription']
-            text = value.iloc[0]
-            self.textEdit.setText(text)
-            # Highlight the keywords
-            keywords = result['keywords']
-            keys = keywords.iloc[0]
-            word_list = str(keys).split(',')
-            text = self.textEdit.toPlainText()
-            highlighted_text = text.lower()
-            # Loop through the words and highlight them in bold
-            if word_list[0] != 'nan':
-                for word in word_list:
-                    highlighted_text = highlighted_text.replace(word, f"<b>{word}</b>")
+        df = data_retrieval(selected_dataset)
+        man = self.ent_manual.toPlainText()
+        conn = sqlite3.connect("UserManagement.db")                 # Connect to the user management database
+        c = conn.cursor()                                           # Setup a cursor, 'c'
+        c.execute("SELECT * FROM variables")
+        variables = c.fetchall()                                    # Select all values from database
+        for var, text in variables:
+            man = man.replace(var, text)
 
-            # Set the highlighted text back to the QTextEdit
-            self.textEdit.setHtml(highlighted_text)
+        if man.strip() == "":
+            self.manual_error.exec()
+            return
+        else:    
+            expr = Expression()
+            result = expr.parse_string(man)
+        
+        # Search the results and filter the dataframe by values which are true under the expression
+        results = df_search(df, result)
+        result = results[results['CRIS_No'] == int(data)]
+        a = (result["term_found_matches"])
+        value = result['Report']
+        b = a.iloc[0]
+        text = value.iloc[0]
+        self.textEdit.setText(text)
+        all_words = []
+        for key, value in b.items():
+            words = [item[0] for item in value[1]]  # Extracting words from the list of tuples
+            all_words.extend(words)
+
+        unique_words = list(set(all_words))
+        pattern = '|'.join(map(re.escape, unique_words))
+        highlighted_text = re.sub(pattern, lambda match: f"<b>{match.group()}</b>", text)
+        self.textEdit.setHtml(highlighted_text)
    
     def help_button_clicked(self):
         self.help = HelpWindow()

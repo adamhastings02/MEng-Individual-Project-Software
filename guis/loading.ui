@@ -70,6 +70,9 @@
       <height>91</height>
      </rect>
     </property>
+    <property name="toolTip">
+     <string>An image showing the University of Leeds logo</string>
+    </property>
     <property name="text">
      <string/>
     </property>
@@ -88,6 +91,9 @@
       <width>271</width>
       <height>101</height>
      </rect>
+    </property>
+    <property name="toolTip">
+     <string>An image showing the NHS logo</string>
     </property>
     <property name="text">
      <string/>

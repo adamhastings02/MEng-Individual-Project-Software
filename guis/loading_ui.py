@@ -79,6 +79,8 @@ class Ui_Loading(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.lab_program.setText(_translate("MainWindow", "NLP ReportGenius"))
+        self.leedslogo.setToolTip(_translate("MainWindow", "An image showing the University of Leeds logo"))
+        self.nhslogo.setToolTip(_translate("MainWindow", "An image showing the NHS logo"))
         self.lab_loading.setText(_translate("MainWindow", "Loading..."))
         self.lab_info.setText(_translate("MainWindow", "An offline NLP tool for examining medical reports"))
         self.lab_info_2.setText(_translate("MainWindow", "For Personal / Institutional use only, with anonymisation"))

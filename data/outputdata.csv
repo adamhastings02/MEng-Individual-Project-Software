@@ -1,1 +1,1 @@
-CRIS_No,Event_Key,Events_date,Modality,NHS_No,forenames,surname,DOB,Age_at_Exam,Gender,examination,examcd_name,projection,dosage,dosagetype,quality,kvp,ma,mas,no_used,no_rejected,reject_reason,seconds,Pat_Type,Referral_Source,Site,clinical_history,report_type,Report
+CRIS_No,Event_Key,Events_date,Modality,NHS_No,forenames,surname,DOB,Age_at_Exam,examination,examcd_name,Pat_Type,Site,referrer,referer_name,referal_source,refsrc_name,clinical_history,report_type,Report

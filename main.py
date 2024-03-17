@@ -2,6 +2,7 @@
 import sys
 import re
 import spacy
+from spacy import displacy
 import sqlite3
 from bcrypt import checkpw
 from PyQt6 import QtWidgets, uic, QtCore
@@ -11,10 +12,9 @@ from PyQt6.QtCore import Qt, QTimer, pyqtSignal
 from guis.mainwindow_ui import Ui_MainWindow
 from guis.loading_ui import Ui_Loading
 from guis.login_ui import Ui_Login
-from guis.Help import Ui_Help
+from guis.help_ui import Ui_Help
 from guis.Mesh import Ui_Mesh
 from guis.variables_ui import Ui_Variables
-from guis.Dataselect import Ui_Data
 from guis.custom_ui import Ui_Custom
 from database import *
 from time import sleep
@@ -25,11 +25,21 @@ from nlprules.preprocessing import clean_dataframe, remove_stopwords, remove_neg
 from nlprules.radexpressions import evaluate_regex, get_regex_proximity, get_regex_wildcards, string_search
 from nlprules.dfsearch import check_all_matches, search_dataframe, evaluate_sentences, list_to_string
 from nlprules.expression import Expression
+import random
 
 # Useful Commands:
 # pyuic6 mainwindow.ui -o MainWindow.py
 # pipenv shell
 # python main.py
+
+def generate_random_colour():
+    """
+    Function to randomly generate the hex code for an RGB colour
+    """
+    r = random.randint(0, 255)      # Red
+    g = random.randint(0, 255)      # Green
+    b = random.randint(0, 255)      # Blue
+    return f'#{r:02x}{g:02x}{b:02x}'# Hex-Code 
 
 def box_clear(self):
     """
@@ -86,6 +96,12 @@ def init_errors(self):
     self.login_error.setIcon(QMessageBox.Icon.Critical)
     self.login_error.setWindowTitle('Login Information')
     self.login_error.setText('Login Failed! Please try again')
+
+    # Info pop-up for incorrect column index selected
+    self.index_error = QMessageBox()
+    self.index_error.setIcon(QMessageBox.Icon.Critical)
+    self.index_error.setWindowTitle('Error')
+    self.index_error.setText('Incorrect column index selected! Please select the CRIS_No of the desired record')
 
     # Are you sure you wish to proceed? (General)
     self.proceed = QMessageBox()
@@ -161,18 +177,6 @@ def data_retrieval(dataset):
     df_data2 = remove_stopwords(df_data, [column_report]) # This removes stopwords
     
     return df_data2
-
-#def manual_retrieval(self):
-    """
-    A function which obtains the expression that has been manually entered by the user
-        
-    Returns:
-    result (nested list) - The string of the entered expression parsed into a nested list of boolean operators and search terms
-    """
-    expression = self.ent_manual.toPlainText()
-    expr = Expression()
-    result = expr.parse_string(expression)
-    return result
 
 def df_search(data, expr):
     df_candidate = data.copy() 
@@ -312,6 +316,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.but_und.clicked.connect(self.und_button_clicked)
         self.but_quit.clicked.connect(self.quit_button_clicked)
         self.but_near.clicked.connect(self.near_button_clicked)
+        self.but_export.clicked.connect(self.export_button_clicked)
         self.check_anonymise.stateChanged.connect(self.anonymise_changed)
 
         init_errors(self)
@@ -329,6 +334,16 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             data = data_retrieval(selected_dataset)
         
+        # Anonymise data if anonymise check box is checked
+        if self.check_anonymise.isChecked():
+            data['forenames'] = "John"
+            data['surname'] = "Doe"
+            data['DOB'] = "DD/MM/YYYY"
+            data['Age_at_Exam'] = "NN"
+            data['NHS_No'] = "AAA BBB CCC"
+        else:
+            pass
+            
         # Check for duplicate data
         duplicates_exist = data['CRIS_No'].duplicated().any()
         if duplicates_exist:
@@ -372,11 +387,16 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # Iterate over the selected indexes
         for index in selected_items:
             # Get the row and column index of each selected cell
-            row = index.row()
-            column = index.column()
-            # Get the data of the selected cell
-            data = self.table_results.model().data(index, role=Qt.ItemDataRole.DisplayRole)
-            # Find the transcription matching the description
+            row = index.row()                                   # Retrieve the row of selected record
+            column = index.column()                             # Retrieve column of the selected record
+            if column != 0:                                     # If it isnt column zero, present an error
+                self.index_error.exec()
+                return
+            else:    
+                # Get the data of the selected cell and proceed
+                data = self.table_results.model().data(index, role=Qt.ItemDataRole.DisplayRole)
+        
+        # Find the transcription matching the description
         df = data_retrieval(selected_dataset)
         man = self.ent_manual.toPlainText()
         conn = sqlite3.connect("UserManagement.db")                 # Connect to the user management database
@@ -401,15 +421,27 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         b = a.iloc[0]
         text = value.iloc[0]
         self.textEdit.setText(text)
-        all_words = []
+        matches = []
+        word = []
+        for i in b.values():
+            list_of_tuples = i[1]
+            for item in list_of_tuples:
+                matches.append(item)
         for key, value in b.items():
-            words = [item[0] for item in value[1]]  # Extracting words from the list of tuples
-            all_words.extend(words)
+            term = [item[0] for item in value[1]]
+            word.extend(term)
 
-        unique_words = list(set(all_words))
-        pattern = '|'.join(map(re.escape, unique_words))
-        highlighted_text = re.sub(pattern, lambda match: f"<b>{match.group()}</b>", text)
-        self.textEdit.setHtml(highlighted_text)
+        unique_words = list(set(word))
+        #print(matches)
+        colours = {thing: generate_random_colour() for thing in unique_words}
+        #pattern = '|'.join(map(re.escape, unique_words))
+        #print(unique_words)
+        self.textEdit.setText(str(colours))
+        options = {"ents": word, "colors": colours}
+        ex = [{"text": text,
+            "ents": [{"start": x[1], "end": x[2], "label": x[0].upper()} for x in matches]}]
+        html = displacy.render(ex, style="ent", manual=True, options=options)
+        self.textEdit.setHtml(html)
    
     def help_button_clicked(self):
         self.help = HelpWindow()
@@ -485,6 +517,35 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             print("Checkbox unchecked")
 
+    def export_button_clicked(self):
+        """
+        A function which executes when the export button is clicked
+        Exports the selected row to the outputdata csv file, in its original format
+        """
+        selected_items = self.table_results.selectedIndexes()   # Retrieve selected data row index
+        for index in selected_items:
+            row = index.row()                                   # Retrieve the row of selected record
+            column = index.column()                             # Retrieve column of the selected record
+            if column != 0:                                     # If it isnt column zero, present an error
+                self.index_error.exec()
+                return
+            else:    
+                # Get the data of the selected cell and proceed
+                data = self.table_results.model().data(index, role=Qt.ItemDataRole.DisplayRole)
+        
+        file_path = self.comboBox.currentText()                 # Obtain selected dataset
+        df = pd.read_csv('data/'+file_path)                     # Convert it to a dataframe
+        record = df[df['CRIS_No'] == int(data)]                 # Filter the dataframe by the CRIS_No
+        df_data = clean_dataframe(record, ['Report'],           # Clean report column of whitespace
+                            drop_duplicates=False,  
+                            drop_nulls=True,        # Drop empty reports
+                            drop_negatives=False,   
+                            drop_ambiguous=False    
+                            )
+        
+        # Export the row to outputdata.csv, appending it without the header or row index
+        df_data.to_csv('data/outputdata.csv', mode='a', header = False, index=False)
+
 class HelpWindow(QtWidgets.QMainWindow, Ui_Help):
     """
     This window appears after the 'Help' button is clicked.
@@ -531,25 +592,6 @@ class MeshWindow(QtWidgets.QMainWindow, Ui_Mesh):
     
     def close_clicked(self):
         self.close()
-
-class DataWindow(QtWidgets.QMainWindow, Ui_Data):
-    def __init__(self, *args, obj=None, **kwargs):
-        super(DataWindow, self).__init__(*args, **kwargs) 
-        self.setupUi(self)
-        self.comboBox.currentIndexChanged.connect(self.update_table)
-        init_errors(self)
-    
-    def update_table(self):
-        self.tableView.setModel(None)
-        selected_dataset = self.comboBox.currentText()
-        if (selected_dataset != "Select"):
-            dataset = data_retrieval(selected_dataset)
-            data = pd.DataFrame(dataset.head(), columns = ['No', 'description','medical_specialty','sample_name'])
-            self.model = TableModel(data)
-            self.tableView.setModel(self.model)
-            self.tableView.resizeColumnsToContents()
-        else:
-            self.tableView.setModel(None)
 
 class CustomWindow(QtWidgets.QMainWindow, Ui_Custom):
     def __init__(self, *args, obj=None, **kwargs):
@@ -675,12 +717,13 @@ window = LoginWindow()
 window.show()
 app.exec()
 sleep(1)
-#try:
-if login_success == 1:
-    window = MainWindow()
-    window.show()
-    app.exec()
-#except:
-    #app.quit()
+try:
+    if login_success == 1:
+        window = MainWindow()
+        window.show()
+        app.exec()
+except:
+    app.quit()
+
 
 

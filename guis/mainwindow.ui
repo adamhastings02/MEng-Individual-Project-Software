@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1350</width>
-    <height>859</height>
+    <height>875</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -42,6 +42,9 @@
     </property>
     <property name="text">
      <string>Search</string>
+    </property>
+    <property name="shortcut">
+     <string>Return</string>
     </property>
    </widget>
    <widget class="QLabel" name="lab_dataset">
@@ -162,6 +165,9 @@
       <height>91</height>
      </rect>
     </property>
+    <property name="toolTip">
+     <string>An image displaying the University of Leeds logo</string>
+    </property>
     <property name="text">
      <string/>
     </property>
@@ -180,6 +186,9 @@
       <width>271</width>
       <height>101</height>
      </rect>
+    </property>
+    <property name="toolTip">
+     <string>An image displaying the NHS logo</string>
     </property>
     <property name="text">
      <string/>
@@ -259,7 +268,7 @@
       <x>450</x>
       <y>60</y>
       <width>861</width>
-      <height>281</height>
+      <height>241</height>
      </rect>
     </property>
     <property name="autoFillBackground">
@@ -611,6 +620,54 @@
     </property>
     <property name="text">
      <string>Quit</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="but_decline">
+    <property name="geometry">
+     <rect>
+      <x>1220</x>
+      <y>310</y>
+      <width>93</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::RightToLeft</enum>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: #FFB6C1;</string>
+    </property>
+    <property name="text">
+     <string>Decline</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="but_approve">
+    <property name="geometry">
+     <rect>
+      <x>1110</x>
+      <y>310</y>
+      <width>93</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::RightToLeft</enum>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: #90EE90;</string>
+    </property>
+    <property name="text">
+     <string>Approve</string>
     </property>
    </widget>
   </widget>

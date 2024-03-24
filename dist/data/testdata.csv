@@ -1,0 +1,74 @@
+CRIS_No,Event_Key,Events_date,Modality,NHS_No,forenames,surname,DOB,Age_at_Exam,examination,examcd_name,Pat_Type,Site,referrer,referer_name,referal_source,refsrc_name,clinical_history,report_type,Report
+11111,123,01/01/2017,U,111 111 111,DUMMY,ONE,22/02/1945,72,UTHPY,US Thyroid & parathyroid,OP,LGI       ,C6026896,FRASER S,RR813,ST JAMES'S UNIVERSITY HOSPITAL,,N,"US Thyroid & parathyroid : 
+
+There is an 23mm lesion situated posteriorly to the right mid pole of the thyroid. This corresponds with the parathyroid adenoma seen on SPECT CT.
+No other parathyroids seen.
+
+A. Smith, Sonographer
+
+ 
+"
+22222,345,01/01/2016,U,222 222 222,FAKE,TWO,20/01/1934,81,UTHPY,US Thyroid & parathyroid,OP,SJH       ,C4617570,ABBAS A,RR813,ST JAMES'S UNIVERSITY HOSPITAL,"Primary hyperparathyroidism. CT SPECT suggests left inferior nodules needs further evaluation with ultrasound. ? parathyroid lesion. Many thanks.
+~(Information via Order Comms)",S,"Clinical History : 
+Primary hyperparathyroidism. CT SPECT suggests left inferior nodules needs further evaluation with ultrasound. ? parathyroid lesion. Many thanks.
+ 
+"
+22222,345,01/01/2016,U,222 222 222,FAKE,TWO,12/12/1934,81,UTHPY,US Thyroid & parathyroid,OP,SJH       ,C4617570,ABBAS A,RR813,ST JAMES'S UNIVERSITY HOSPITAL,"Primary hyperparathyroidism. CT SPECT suggests left inferior nodules needs further evaluation with ultrasound. ? parathyroid lesion. Many thanks.
+~(Information via Order Comms)",N,"US Thyroid & parathyroid : 
+
+CT SPECT scan noted.
+The parathyroids could not be identified.
+
+Normal sized thyroid.  No convincing nodule seen within the left lobe.  In the right lobe at the level of the isthmus there are two anteriorly sited subcentimetre spongiform nodules with no internal vascularity (BTS U2 benign).
+No lymphadenopathy seen in either side of the neck.
+
+Conclusion: The two right inferior nodules seen on the SPECT/CT are not demonstrated on ultrasound and likely dilated veins. This patient likely has a single right superior parathyroid adenoma.
+
+Scanned and reported by B. Jones, Sonographer 
+
+Reported by Dr C Rosicky, Consultant Radiologist (Nuclear Medicine). 
+"
+3333,910,03/01/2018,U,333 333 333,DUMMY,THREE,09/02/1973,45,UPTHY,US Parathyroid,OP,LGI       ,C4617570,ABBAS A,RR813,ST JAMES'S UNIVERSITY HOSPITAL,"Right sided nodule seen on CT and USS.
+High calcium
+Patient concerned about malignancy.
+? Interval change. ? any suspicious features.
+~(Information via Order Comms)",N,"US Parathyroid : 
+No parathyroid adenoma identified on ultrasound.
+"
+444,111,14/03/2014,U,444 444 444,NOT,APATIENT,23/11/1952,62,UPTHY,US Parathyroid,GP,LGI       ,G9211876,MOSSAD MG,B86670,MADEUP SURGERY,"Raised parathormone
+~(Information via Order Comms)",S,"Clinical History : Raised parathormone
+"
+5555555,121,18/09/2014,U,555 555  555,TEST,FIVE,02/01/1952,62,UPTHY,US Parathyroid,GP,LGI       ,G9211876,MOSSAD MG,B86670,MADEUP SURGERY,"Raised parathormone
+~(Information via Order Comms)",N,"Findings:  This was a difficult examination.  In addition the patient was unable to lie flat and hyperextend the neck.The thyroid gland is of normal size but there are a number of a solid/cystic nodules throughout the gland.Colloid is identified in the largest nodule which is in the left lobe of the gland and measures 2.5 cm x 1.2 cm x 1.1 cm.  There is no convincing evidence of a parathyroid adenoma.  No significant lymphadenopathy was identified in either the right or left sides of the neck.
+
+Conclusion:  No parathyroid adenoma identified but this should be taken in the context that this was a difficult examination.  If there remains clinical concern a SPECT/CT scan can be considered.The appearances of the thyroid gland are benign in nature.
+"
+6666,134,05/05/2015,U,666 666 666,FAKE,SIX,19/02/1926,88,UTHPY,US Thyroid & parathyroid,IP,SJH       ,C6025031,SUTTON GM,RR813,ST JAMES'S UNIVERSITY HOSPITAL,"voice change. left throid enlargement weight loss ?mass
+~(Information via Order Comms)",S,"Clinical History : 
+voice change. left throid enlargement weight loss ?mass
+ 
+"
+7777,146,08/12/2015,U,777 777 777,MADE,UPSEVEN,23/12/1926,88,UTHPY,US Thyroid & parathyroid,IP,SJH       ,C6025031,SUTTON GM,RR813,ST JAMES'S UNIVERSITY HOSPITAL,"voice change. left throid enlargement weight loss ?mass
+~(Information via Order Comms)",N,"US Thyroid & parathyroid : The left lobe of thyroid is enlarged and heterogenous in echotexture.
+There are some small cystic colloid nodules throughout the thyroid (U2).
+No discrete masses identified.
+
+Appearances consistent with a multinodular goitre.
+
+Scanned & reported by Reporting Sonographer D Clayton.
+"
+8888,178,03/10/2016,U,888 888 888,NAME,FAKE,04/04/1970,46,UTHPY,US Thyroid & parathyroid,OP,LGI       ,C2710794,LANSDOWN MRJ,RR801,LEEDS GENERAL INFIRMARY,pre-op planining,S,"Clinical History : 
+pre-op planining
+
+US Thyroid & parathyroid : 
+Solitary right inferior parathyroid adenoma immediately below the inferior pole of the thyroid measuring up to 1.6 cm craniocaudally. A separate 5 mm nodule on the left abutting the superior pole of the thyroid has the appearance of a normal lymph node with a fatty hilum. No other candidate lesions.
+
+Impression: Solitary right inferior parathyroid adenoma.
+
+Dr A Spec (Consultant Radiologist, GMC 1234567)
+ 
+"
+999999,189,20/03/2016,U,999 999 999,TEST,LAST,29/01/1970,46,UTHPY,US Thyroid & parathyroid,OP,LGI       ,C2710794,LANSDOWN MRJ,RR801,LEEDS GENERAL INFIRMARY,"Pre-op parathyroid, renal.
+~(Information via Order Comms)",N,"US Thyroid & parathyroid : Both superior adenomata are too deep for demonstration on ultrasound.
+
+The right inferior adenoma could not be visualised. The left inferior adenoma was demonstrated below the thyroid as seen on the prior scan. "

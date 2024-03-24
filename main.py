@@ -1,14 +1,23 @@
-# Imports
+# General Imports:
 import sys
 import re
 import spacy
 from spacy import displacy
+from time import sleep
+import pandas as pd 
+import numpy as np
+import matplotlib.pyplot as plt
+import random
+from datetime import datetime
+# Databse Imports:
 import sqlite3
 from bcrypt import checkpw
+from database import *
+# PyQt6 Imports:
 from PyQt6 import QtWidgets, uic, QtCore
 from PyQt6.QtWidgets import *
 from PyQt6.QtGui import QTextCharFormat, QTextCursor, QColor, QFont
-from PyQt6.QtCore import Qt, QTimer, pyqtSignal
+from PyQt6.QtCore import Qt, QTimer, pyqtSignal, QDate
 from guis.mainwindow_ui import Ui_MainWindow
 from guis.loading_ui import Ui_Loading
 from guis.login_ui import Ui_Login
@@ -16,46 +25,35 @@ from guis.help_ui import Ui_Help
 from guis.Mesh import Ui_Mesh
 from guis.variables_ui import Ui_Variables
 from guis.custom_ui import Ui_Custom
-from database import *
-from time import sleep
-import pandas as pd 
-import numpy as np
-import matplotlib.pyplot as plt
+# RADEX Tool Imports
 from nlprules.preprocessing import clean_dataframe, remove_stopwords, remove_negated_phrases
 from nlprules.radexpressions import evaluate_regex, get_regex_proximity, get_regex_wildcards, string_search
 from nlprules.dfsearch import check_all_matches, search_dataframe, evaluate_sentences, list_to_string
 from nlprules.expression import Expression
-import random
+# Globals declaration list:
+global colourdict
+colourdict = {}
 
 # Useful Commands:
 # pyuic6 mainwindow.ui -o MainWindow.py
 # pipenv shell
 # python main.py
+# pyinstaller --onefile main.py
+# To export as an executable, type the above command, and copy across the data, guis, negex
+# and nlprules folders to dist folder. May need more folders but still TBD
 
-def generate_random_colour():
-    """
-    Function to randomly generate the hex code for an RGB colour
-    """
-    r = random.randint(0, 255)      # Red
-    g = random.randint(0, 255)      # Green
-    b = random.randint(0, 255)      # Blue
-    return f'#{r:02x}{g:02x}{b:02x}'# Hex-Code 
+# Program Begin
 
 def box_clear(self):
     """
     A function which clears all of the text boxes, and resets the combo and spin boxes
     """
-    # Clear the manual entry text entry
-    self.ent_manual.clear()
-
-    # Clear the results table
-    self.table_results.setModel(None)
-
-    # Clear the expanded record text entry
-    self.textEdit.clear()
-
-    # Reset the dataset
-    self.comboBox.setCurrentText("Select")
+    self.ent_manual.clear()                             # Clear the manual entry text entry
+    self.table_results.setModel(None)                   # Clear the results table
+    self.textEdit.clear()                               # Clear the expanded record text entry
+    self.comboBox.setCurrentText("Select")              # Reset the dataset
+    self.dateCombo.setCurrentText("No Date Filtering")  # Reset the date option
+    self.dateEdit.setDate(QDate.currentDate())          # Reset the date
 
 def init_errors(self):
     """
@@ -111,38 +109,6 @@ def init_errors(self):
     self.proceed.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
     self.proceed.setDefaultButton(QMessageBox.StandardButton.No) 
 
-def init_tooltips(self):
-    """
-    A function which sets up the tool tips to assist the usability of the program
-    """
-    # Wildcard Information
-    wildtips = str("None : If you don't wish to select a wildcard"+'\n'+
-               "* : The * wildcard matches any number of characters"+'\n'+
-               "? : The ? wildcard matches any single character"+'\n'+
-               "_ : The _ wildcard enforces a word boundary")
-    self.ent_wild1.setToolTip(wildtips)
-    self.ent_wild2.setToolTip(wildtips)
-    self.ent_wild3.setToolTip(wildtips)
-    self.ent_wild4.setToolTip(wildtips)
-
-    # Expression Information
-    exprtips = str("None : If you don't wish to select an expression"+'\n'+
-               "~ : Use proximity operator ~X to search for words that are X near each other"+'\n'+
-               "AND: The logical AND operator returns values if both terms are true and returns false otherwise"+'\n'+
-               "OR: The logical OR operator returns values if either terms are true and returns false if neither are" +'\n'+
-               "NOT: The logical NOT operator returns values if that term isn't there"+'\n'+
-               "EXCEPT: The logical EXCEPT operator means AND NOT"+'\n'+
-               "NEAR: Use proximity operator NEARX to search for words that are X near each other")
-    self.ent_expr1.setToolTip(exprtips)
-    self.ent_expr2.setToolTip(exprtips)
-    self.ent_expr3.setToolTip(exprtips)
-
-def init_shortcuts(self):
-    """
-    A function which houses any shortcuts for the main window
-    """
-    self.but_and.setShortcut("Ctrl+A")
-
 def data_retrieval(dataset):
     """
     Retrieves the selected dataset, cleans the data and removes all stopwords
@@ -158,12 +124,10 @@ def data_retrieval(dataset):
     df_data0 = pd.read_csv('data/'+file_path)
     #df_data3 = df_data0.sample(n=100)
     df_data0.fillna('', inplace=True)
-    
 
     # RAW DATA TABLE
     column_report = 'Report'
     
-
     #CLEANED DATA
     df_data = clean_dataframe(df_data0, [column_report], 
                             drop_duplicates=True, # drop duplicate entries
@@ -179,10 +143,21 @@ def data_retrieval(dataset):
     return df_data2
 
 def df_search(data, expr):
-    df_candidate = data.copy() 
+    """
+    Performs a REGEX search on a given dataset using a given expression. 
+    Main functionality for the program, combining the GUI with the RADEX tool programs
+
+    Args:
+        data: The dataset you desire to perform the search upon
+        expr: The custom expression written using the manual search line to search the dataframe with
+
+    Returns:
+        searched: The original dataframe with a new column that houses the terms found, and their indexes in the report
+    """
+    df_candidate = data.copy()                          # Make a copy of the dataframe, and then search it by the argument expression
     searched = search_dataframe(df_candidate, column='Report', expression=expr, 
-    new_column_name='term_found', debug_column=True)
-    return searched
+    new_column_name='term_found', debug_column=True)    # Create a new column for the terms_found
+    return searched                                     # Return the new dataframe
 
 class TableModel(QtCore.QAbstractTableModel):
     """
@@ -317,10 +292,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.but_quit.clicked.connect(self.quit_button_clicked)
         self.but_near.clicked.connect(self.near_button_clicked)
         self.but_export.clicked.connect(self.export_button_clicked)
+        self.but_colours.clicked.connect(self.colours_button_clicked)
         self.check_anonymise.stateChanged.connect(self.anonymise_changed)
+        self.dateEdit.setDate(QDate.currentDate())
 
         init_errors(self)
-        init_shortcuts(self)
 
     def manual_button_clicked(self):
         """
@@ -329,12 +305,36 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # Retrieve the selected dataset, and throw an error if not selected. Otherwise retrieve dataset
         selected_dataset = self.comboBox.currentText()
         if selected_dataset == "Select":
-            self.dataset_error.exec()
-            return
+            self.dataset_error.exec()               # Error popup for no dataset selected
+            return                                  # End function
         else:
-            data = data_retrieval(selected_dataset)
+            data = data_retrieval(selected_dataset) # Retrieve the dataset
+
+        # Check for duplicate data
+        duplicates_exist = data['CRIS_No'].duplicated().any()   # Checks dataframe for any duplicates
+        if duplicates_exist:
+            self.duplicate_error.exec()                         # If so, popup an error but proceed anyway
+        else:
+            pass                                                # Otherwise proceed
+
+
+        # Check to see if they have selected a date to filter by
+        filtering_date = self.dateCombo.currentText()                                   # Access if they want to filter the date
+        target_date = self.dateEdit.date().toString()                                   # Access current date value and convert to string
         
-        # Anonymise data if anonymise check box is checked
+        if (filtering_date == "Before"):                                                # IF Before is selected
+            data['Events_date'] = pd.to_datetime(data['Events_date'], format='%d/%m/%Y')# Format EventsDate column to appropriate format
+            data = data[data['Events_date'] <= target_date]                             # Filter dataframe for less than
+            data['Events_date'] = data['Events_date'].dt.strftime("%d/%m/%Y")           # Reset the date formatting
+        
+        elif (filtering_date == "After"):                                               # IF After is selected
+            data['Events_date'] = pd.to_datetime(data['Events_date'], format='%d/%m/%Y')# Format EventsDate column to appropriate format
+            data = data[data['Events_date'] >= target_date]                             # Filter dataframe for greater than
+            data['Events_date'] = data['Events_date'].dt.strftime("%d/%m/%Y")           # Reset the date formatting
+        else:
+            pass
+    
+        # Anonymise data if anonymise check box is checked [forenames,surname,dob,age,NHS_no]
         if self.check_anonymise.isChecked():
             data['forenames'] = "John"
             data['surname'] = "Doe"
@@ -344,28 +344,22 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             pass
             
-        # Check for duplicate data
-        duplicates_exist = data['CRIS_No'].duplicated().any()
-        if duplicates_exist:
-            self.duplicate_error.exec()
-        else:
-            pass
-
         # Retrieve the line, and if this is empty, then throw an error. Otherwise create expression object
-        man = self.ent_manual.toPlainText()
-        conn = sqlite3.connect("UserManagement.db")                 # Connect to the user management database
-        c = conn.cursor()                                           # Setup a cursor, 'c'
-        c.execute("SELECT * FROM variables")
-        variables = c.fetchall()                                    # Select all values from database
-        for var, text in variables:
-            man = man.replace(var, text)
+        man = self.ent_manual.toPlainText()         # Read the text in the search bar
+        conn = sqlite3.connect("UserManagement.db") # Connect to the user management database
+        c = conn.cursor()                           # Setup a cursor, 'c'
+        c.execute("SELECT * FROM variables")        # Select all from variables
+        variables = c.fetchall()                    # Select all values from database
+        
+        for var, text in variables:                 # If there is a variable in the text...
+            man = man.replace(var, text)            # replace it with the associated text from the database
 
-        if man.strip() == "":
-            self.manual_error.exec()
+        if man.strip() == "":                       # If the manual line is empty...
+            self.manual_error.exec()                # Popup an error and terminate the funciton
             return
-        else:    
-            expr = Expression()
-            result = expr.parse_string(man)
+        else:                                       # Otherwise...
+            expr = Expression()                     # Create an expression object 
+            result = expr.parse_string(man)         # Parse the manual entry line to produce the regex expression
         
         # Search the results and filter the dataframe by values which are true under the expression
         results = df_search(data, result)
@@ -431,17 +425,50 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             term = [item[0] for item in value[1]]
             word.extend(term)
 
+        colours = {}
         unique_words = list(set(word))
-        #print(matches)
-        colours = {thing: generate_random_colour() for thing in unique_words}
-        #pattern = '|'.join(map(re.escape, unique_words))
-        #print(unique_words)
+        for uw in unique_words:
+            colours[uw] = None
+        
+        for w in unique_words:
+            if w in colourdict:
+                # If the word exists in the global dictionary, use its colour
+                colours[w] = colourdict[w]
+            else:
+                # If the word doesn't exist, generate a random colour
+                colours[w] = '#FFFF00'
+                #print("It has got here")
+
+        indexed_matches = []
+        # Iterate through each match
+        for wd, start, end in matches:
+            # Initialize a variable to store the start index for each match
+            current_start = 0
+            # Find all occurrences of the word in the text
+            while True:
+                # Find the next occurrence of the word after the current_start index
+                true_start = text.find(wd, current_start)
+                # If no more occurrences are found, break out of the loop
+                if true_start == -1:
+                    break
+                # Calculate the true end index based on the start index and word length
+                true_end = true_start + len(wd)
+                # Append the word and its true location to the indexed_matches list
+                indexed_matches.append((wd, true_start, true_end))
+                # Update the current_start index to search for the next occurrence
+                current_start = true_start + 1
+
         self.textEdit.setText(str(colours))
         options = {"ents": word, "colors": colours}
         ex = [{"text": text,
-            "ents": [{"start": x[1], "end": x[2], "label": x[0].upper()} for x in matches]}]
+            "ents": [{"start": x[1], "end": x[2], "label": x[0].upper()} for x in indexed_matches]}]
         html = displacy.render(ex, style="ent", manual=True, options=options)
         self.textEdit.setHtml(html)
+
+        # Add all matches to the matches combo box
+        self.matchesCombo.clear()
+        for line in unique_words:
+            self.matchesCombo.addItem(line)
    
     def help_button_clicked(self):
         self.help = HelpWindow()
@@ -545,6 +572,17 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         
         # Export the row to outputdata.csv, appending it without the header or row index
         df_data.to_csv('data/outputdata.csv', mode='a', header = False, index=False)
+
+    def colours_button_clicked(self):
+        """
+        A function which executes when the colours button is clicked
+        Launches a dialogue window which allows a user to custom select the term matches
+        """
+        colour = QColorDialog.getColor(Qt.GlobalColor.black, None, "Select Color")
+        if colour.isValid():
+            print("Selected Color:", colour.name())
+        word = self.matchesCombo.currentText()
+        colourdict[word] = colour.name()
 
 class HelpWindow(QtWidgets.QMainWindow, Ui_Help):
     """

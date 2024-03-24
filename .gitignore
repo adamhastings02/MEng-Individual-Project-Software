@@ -37,3 +37,6 @@ env/
 corpora/
 figs/
 archive/
+distribution.zip
+/build/main
+/dist

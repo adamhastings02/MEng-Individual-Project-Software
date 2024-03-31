@@ -1,12 +1,8 @@
 CRIS_No,Event_Key,Events_date,Modality,NHS_No,forenames,surname,DOB,Age_at_Exam,examination,examcd_name,Pat_Type,Site,referrer,referer_name,referal_source,refsrc_name,clinical_history,report_type,Report
 11111,123,01/01/2017,U,111 111 111,NICK,POPE,22/02/1945,72,UTHPY,US Thyroid & parathyroid,OP,LGI       ,C6026896,FRASER S,RR813,ST JAMES'S UNIVERSITY HOSPITAL,,N,"US Thyroid & parathyroid : 
 
-There is an 23mm lesion situated posteriorly to the right mid pole of the thyroid. This corresponds with the parathyroid adenoma seen on SPECT CT.
+There is an 23 mm lesion situated posteriorly to the right mid pole of the thyroid. This corresponds with the parathyroid adenoma seen on SPECT CT.
 No other parathyroids seen.
-
-A. Smith, Sonographer
-
- 
 "
 22222,345,01/01/2016,U,222 222 222,CIARAN,CLARK,20/01/1934,81,UTHPY,US Thyroid & parathyroid,OP,SJH       ,C4617570,ABBAS A,RR813,ST JAMES'S UNIVERSITY HOSPITAL,"Primary hyperparathyroidism. CT SPECT suggests left inferior nodules needs further evaluation with ultrasound. ? parathyroid lesion. Many thanks.
 ~(Information via Order Comms)",S,"Clinical History : 
@@ -44,9 +40,8 @@ No parathyroid adenoma identified on ultrasound.
 Conclusion:  No parathyroid adenoma identified but this should be taken in the context that this was a difficult examination.  If there remains clinical concern a SPECT/CT scan can be considered.The appearances of the thyroid gland are benign in nature.
 "
 6666,134,05/05/2015,U,666 666 666,DWIGHT,GAYLE,19/02/1926,88,UTHPY,US Thyroid & parathyroid,IP,SJH       ,C6025031,SUTTON GM,RR813,ST JAMES'S UNIVERSITY HOSPITAL,"voice change. left throid enlargement weight loss ?mass
-~(Information via Order Comms)",S,"Clinical History : 
-voice change. left throid enlargement weight loss ?mass
- 
+~(Information via Order Comms)",S,"SUBJECTIVE:,  This 23-year-old white female presents with complaint of allergies.  She used to have allergies when she lived in Seattle but she thinks they are worse here.  In the past, she has tried Claritin, and Zyrtec.  Both worked for short time but then seemed to lose effectiveness.  She has used Allegra also.  She used that last summer and she began using it again two weeks ago.  It does not appear to be working very well.  She has used over-the-counter sprays but no prescription nasal sprays.  She does have asthma but doest not require daily medication for this and does not think it is flaring up.,MEDICATIONS: , Her only medication currently is Ortho Tri-Cyclen and the Allegra.,ALLERGIES: , She has no known medicine allergies.,OBJECTIVE:,Vitals:  Weight was 130 pounds and blood pressure 124/78.,HEENT:  Her throat was mildly erythematous without exudate.  Nasal mucosa was erythematous and swollen.  Only clear drainage was seen.  TMs were clear.,Neck:  Supple without adenopathy.,Lungs:  Clear.,ASSESSMENT:,  Allergic rhinitis.,PLAN:,1.  She will try Zyrtec instead of Allegra again.  Another option will be to use loratadine.  She does not think she has prescription coverage so that might be cheaper.,2.  Samples of Nasonex two sprays in each nostril given for three weeks.  A prescription was written as well.
+
 "
 7777,146,08/12/2015,U,777 777 777,PAUL,DUMMETT,23/12/1926,88,UTHPY,US Thyroid & parathyroid,IP,SJH       ,C6025031,SUTTON GM,RR813,ST JAMES'S UNIVERSITY HOSPITAL,"voice change. left throid enlargement weight loss ?mass
 ~(Information via Order Comms)",N,"US Thyroid & parathyroid : The left lobe of thyroid is enlarged and heterogenous in echotexture.
@@ -63,7 +58,7 @@ pre-op planining
 US Thyroid & parathyroid : 
 Solitary right inferior parathyroid adenoma immediately below the inferior pole of the thyroid measuring up to 1.6 cm craniocaudally. A separate 5 mm nodule on the left abutting the superior pole of the thyroid has the appearance of a normal lymph node with a fatty hilum. No other candidate lesions.
 
-Impression: Solitary right inferior parathyroid adenoma.
+Impression: Solitary right inferior parathyroid adenoma. loperamide 
 
 Dr A Spec (Consultant Radiologist, GMC 1234567)
  

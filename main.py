@@ -32,7 +32,7 @@ from nlprules.dfsearch import check_all_matches, search_dataframe, evaluate_sent
 from nlprules.expression import Expression
 # Globals declaration list:
 global colourdict
-colourdict = {}
+colourdict = {"PATHOGEN": "#F67DE3", "MEDICINE": "#7DF6D9", "MEDICALCONDITION":"#a6e22d", "QUANTITY":"#ffffff"}
 
 # Useful Commands:
 # pyuic6 mainwindow.ui -o MainWindow.py
@@ -295,6 +295,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.but_colours.clicked.connect(self.colours_button_clicked)
         self.check_anonymise.stateChanged.connect(self.anonymise_changed)
         self.dateEdit.setDate(QDate.currentDate())
+        
 
         init_errors(self)
 
@@ -365,6 +366,51 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         results = df_search(data, result)
         condition = results['term_found'] == True
         filtered_df = results[condition]
+
+        # Sorting Algorithms
+        sorting = self.sortCombo.currentText()
+        if sorting == "Default":
+            pass
+        # Age
+        elif sorting == "Age - Ascending":
+            filtered_df = filtered_df.sort_values(by='Age_at_Exam', ascending=True)
+        elif sorting == "Age - Descending":
+            filtered_df = filtered_df.sort_values(by='Age_at_Exam', ascending=False)
+        # CRIS_No
+        elif sorting == "CRISNo - Ascending":
+            filtered_df = filtered_df.sort_values(by='CRIS_No', ascending=True)
+        elif sorting == "CRISNo - Descending":
+            filtered_df = filtered_df.sort_values(by='CRIS_No', ascending=False)
+        # Date
+        elif sorting == "Date - Ascending":
+            filtered_df['Events_date'] = pd.to_datetime(filtered_df['Events_date'], format='%d/%m/%Y')# Format EventsDate column to appropriate format
+            filtered_df = filtered_df.sort_values(by='Events_date', ascending=True)                   # Filter dataframe for less than
+            filtered_df['Events_date'] = filtered_df['Events_date'].dt.strftime("%d/%m/%Y")         
+        elif sorting == "Date - Descending":
+            filtered_df['Events_date'] = pd.to_datetime(filtered_df['Events_date'], format='%d/%m/%Y')# Format EventsDate column to appropriate format
+            filtered_df = filtered_df.sort_values(by='Events_date', ascending=False)                  # Filter dataframe for less than
+            filtered_df['Events_date'] = filtered_df['Events_date'].dt.strftime("%d/%m/%Y") 
+        # Event Key
+        elif sorting == "EventKey - Ascending":
+            filtered_df = filtered_df.sort_values(by='Event_Key', ascending=True)
+        elif sorting == "EventKey - Descending":
+            filtered_df = filtered_df.sort_values(by='Event_Key', ascending=False)
+        # Forename
+        elif sorting == "Forename - Ascending":
+            filtered_df = filtered_df.sort_values(by='forenames', ascending=True)
+        elif sorting == "Forename - Descending":
+            filtered_df = filtered_df.sort_values(by='forenames', ascending=False)
+        # NHS No
+        elif sorting == "NHSNo - Ascending":
+            filtered_df = filtered_df.sort_values(by='NHS_No', ascending=True)
+        elif sorting == "NHSNo - Descending":
+            filtered_df = filtered_df.sort_values(by='NHS_No', ascending=False)
+        # NHS No
+        elif sorting == "Surname - Ascending":
+            filtered_df = filtered_df.sort_values(by='surname', ascending=True)
+        elif sorting == "Surname - Descending":
+            filtered_df = filtered_df.sort_values(by='surname', ascending=False)
+
         if len(filtered_df != 0):
             self.model = TableModel(filtered_df)
             self.table_results.setModel(self.model)
@@ -378,6 +424,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def expand_button_clicked(self):
         selected_items = self.table_results.selectedIndexes()
         selected_dataset = self.comboBox.currentText()
+        nlp_ner = spacy.load("model-best")
         # Iterate over the selected indexes
         for index in selected_items:
             # Get the row and column index of each selected cell
@@ -424,6 +471,31 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         for key, value in b.items():
             term = [item[0] for item in value[1]]
             word.extend(term)
+        
+        indexed_matches = []
+
+        ## NER
+        doc = nlp_ner(text)
+        for token in doc.ents:
+            t1 = token.label_
+            t2 = token.start_char
+            t3 = token.end_char
+            tm = (t1,t2,t3)
+            indexed_matches.append(tm)
+            word.append(t1)
+        
+        nlp = spacy.load("en_core_web_sm")
+        doc2 = nlp(text)
+        for token in doc2.ents:
+            if(token.label_ == "QUANTITY"):
+                t1 = token.label_
+                t2 = token.start_char
+                t3 = token.end_char
+                tm = (t1,t2,t3)
+                indexed_matches.append(tm)
+                word.append(t1)
+            else:
+                pass
 
         colours = {}
         unique_words = list(set(word))
@@ -439,7 +511,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 colours[w] = '#FFFF00'
                 #print("It has got here")
 
-        indexed_matches = []
+        
+
         # Iterate through each match
         for wd, start, end in matches:
             # Initialize a variable to store the start index for each match
@@ -457,7 +530,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 indexed_matches.append((wd, true_start, true_end))
                 # Update the current_start index to search for the next occurrence
                 current_start = true_start + 1
-
+        #print(indexed_matches)
+        indexed_matches = list(set(indexed_matches))
+        indexed_matches = list(indexed_matches)
+        print(indexed_matches)
+        
         self.textEdit.setText(str(colours))
         options = {"ents": word, "colors": colours}
         ex = [{"text": text,

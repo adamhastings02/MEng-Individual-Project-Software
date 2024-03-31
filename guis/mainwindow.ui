@@ -809,7 +809,7 @@
      <rect>
       <x>580</x>
       <y>320</y>
-      <width>111</width>
+      <width>151</width>
       <height>21</height>
      </rect>
     </property>
@@ -823,6 +823,89 @@
       <string>Default</string>
      </property>
     </item>
+    <item>
+     <property name="text">
+      <string>Age - Ascending</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Age - Descending</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>CRISNo - Ascending</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>CRISNo - Descending</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Date - Ascending</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Date - Descending</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>EventKey - Ascending</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>EventKey - Descending</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Forename - Ascending</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Forename - Descending</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>NHSNo - Ascending</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>NHSNo - Descending</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Surname - Ascending</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Surname - Descending</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QPushButton" name="but_filtering">
+    <property name="geometry">
+     <rect>
+      <x>660</x>
+      <y>680</y>
+      <width>93</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Filtering</string>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

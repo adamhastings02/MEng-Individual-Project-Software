@@ -41,3 +41,5 @@ distribution.zip
 /build/main
 /dist
 /radiology_reports
+model-last/vocab/vectors
+model-best/vocab/vectors

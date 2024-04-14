@@ -2,6 +2,7 @@
 import sys
 import re
 import spacy
+import string
 from spacy import displacy
 from time import sleep
 import pandas as pd 
@@ -9,6 +10,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import random
 from datetime import datetime
+import time
 # Databse Imports:
 import sqlite3
 from bcrypt import checkpw
@@ -33,6 +35,16 @@ from nlprules.expression import Expression
 # Globals declaration list:
 global colourdict
 colourdict = {"PATHOGEN": "#F67DE3", "MEDICINE": "#7DF6D9", "MEDICALCONDITION":"#a6e22d", "QUANTITY":"#ffffff"}
+global elapsed_times
+elapsed_times = []
+global lengths_times
+lengths_times = []
+global search_times
+search_times = []
+global approved
+approved = []
+global rejected
+rejected = []
 
 # Useful Commands:
 # pyuic6 mainwindow.ui -o MainWindow.py
@@ -158,6 +170,28 @@ def df_search(data, expr):
     searched = search_dataframe(df_candidate, column='Report', expression=expr, 
     new_column_name='term_found', debug_column=True)    # Create a new column for the terms_found
     return searched                                     # Return the new dataframe
+
+def remove_unwanted_terms(lst):
+    result = []
+    for item in lst:
+        if isinstance(item, list):
+            result.append(remove_unwanted_terms(item))  # Recursively process nested lists
+        elif isinstance(item, str) and len(item) == 1 and item in string.punctuation:
+            continue  # Skip single punctuation terms
+        elif item == '¬':
+            continue  # Skip specific unwanted character
+        else:
+            result.append(item)
+    return result
+
+def count_terms(lst):
+    count = 0
+    for item in lst:
+        if isinstance(item, list):
+            count += count_terms(item)  # Recursively count terms in nested lists
+        else:
+            count += 1
+    return count
 
 class TableModel(QtCore.QAbstractTableModel):
     """
@@ -293,16 +327,20 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.but_near.clicked.connect(self.near_button_clicked)
         self.but_export.clicked.connect(self.export_button_clicked)
         self.but_colours.clicked.connect(self.colours_button_clicked)
-        self.check_anonymise.stateChanged.connect(self.anonymise_changed)
+        self.but_performance.clicked.connect(self.performance_button_clicked)
+        self.but_approve.clicked.connect(self.approve_button_clicked)
+        self.but_decline.clicked.connect(self.decline_button_clicked)
+        self.but_searchall.clicked.connect(self.searchall_button_clicked)
+        self.but_original.clicked.connect(self.original_button_clicked)
         self.dateEdit.setDate(QDate.currentDate())
         
-
         init_errors(self)
 
     def manual_button_clicked(self):
         """
         A function which executes when the search button near the manual entry line is clicked
         """
+        start_time = time.time()
         # Retrieve the selected dataset, and throw an error if not selected. Otherwise retrieve dataset
         selected_dataset = self.comboBox.currentText()
         if selected_dataset == "Select":
@@ -417,11 +455,18 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.table_results.resizeColumnsToContents()
         else:
             self.nothing_error.exec() # Executes if no results for searched expression
+        
+        # Store time to search value 
+        end_time = time.time()
+        elapsed_time = end_time-start_time
+        num_rows = len(data)
+        search_times.append((num_rows, elapsed_time))
      
     def clear_button_clicked(self):
         box_clear(self)
 
     def expand_button_clicked(self):
+        start_time = time.time()
         selected_items = self.table_results.selectedIndexes()
         selected_dataset = self.comboBox.currentText()
         nlp_ner = spacy.load("model-best")
@@ -509,9 +554,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             else:
                 # If the word doesn't exist, generate a random colour
                 colours[w] = '#FFFF00'
-                #print("It has got here")
-
-        
 
         # Iterate through each match
         for wd, start, end in matches:
@@ -530,10 +572,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 indexed_matches.append((wd, true_start, true_end))
                 # Update the current_start index to search for the next occurrence
                 current_start = true_start + 1
-        #print(indexed_matches)
         indexed_matches = list(set(indexed_matches))
         indexed_matches = list(indexed_matches)
-        print(indexed_matches)
         
         self.textEdit.setText(str(colours))
         options = {"ents": word, "colors": colours}
@@ -546,6 +586,20 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.matchesCombo.clear()
         for line in unique_words:
             self.matchesCombo.addItem(line)
+        
+        # End timer and extract total time elapsed
+        # No of terms vs time
+        num = (expr.parse_string(man))
+        cleaned_list = remove_unwanted_terms(num)
+        num_terms = count_terms(cleaned_list)
+        end_time = time.time()
+        elapsed_time = end_time - start_time
+        elapsed_times.append((num_terms, elapsed_time))
+
+        # Length of record vs time
+        words = text.split()
+        num_words = len(words)
+        lengths_times.append((num_words,elapsed_time))
    
     def help_button_clicked(self):
         self.help = HelpWindow()
@@ -614,13 +668,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         updated_text = current_text + new_text
         self.ent_manual.setPlainText(updated_text)
 
-    def anonymise_changed(self, state):
-        if state == 2:  # Checked state
-            print("Checkbox checked")
-           
-        else:
-            print("Checkbox unchecked")
-
     def export_button_clicked(self):
         """
         A function which executes when the export button is clicked
@@ -660,6 +707,252 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             print("Selected Color:", colour.name())
         word = self.matchesCombo.currentText()
         colourdict[word] = colour.name()
+
+    def performance_button_clicked(self):
+        """
+        A function which executes when the performance button is clicked \n
+        Plots various performance related metrics \n
+        At time of writing, this includes: 
+            - Number of Searches vs Elapsed Time of Expand (Bar)
+            - Number of Words in Report vs Elapsed Time of Expand (Scatter)
+            - Average search time (Display)
+        """
+        # 1st graph
+        # Convert the list of tuples to a NumPy array
+        data_array = np.array(elapsed_times)
+        # Calculate the average of the second value for each unique first value
+        averages = []
+        for unique_first_value in np.unique(data_array[:, 0]):
+            subset = data_array[data_array[:, 0] == unique_first_value]
+            average = np.mean(subset[:, 1])
+            averages.append((unique_first_value, average))
+        # Separate the unique first values and their corresponding averages
+        x_values, y_values = zip(*averages)
+        # Plot the averages
+        fig1 = plt.figure()
+        ax1 = fig1.add_subplot(111)
+        ax1.bar(x_values, y_values)
+        ax1.set_xlabel('Number of terms')
+        ax1.set_ylabel('Average time taken for record expansion (s)')
+        ax1.set_title('Plot Of Average Time Taken For Record Expansion vs Number Of Search Terms Used')
+        for x, y in zip(x_values, y_values):
+            ax1.text(x, y, f'{y:.2f}', ha='center', va='bottom')
+        #plt.show()
+
+        # 2nd Graph 
+        x_values = [item[0] for item in lengths_times]
+        y_values = [item[1] for item in lengths_times]
+        # Plot the data
+        fig2 = plt.figure()
+        ax2 = fig2.add_subplot(111)
+        ax2.scatter(x_values, y_values, color='b', label='Data')
+        coefficients_1 = np.polyfit(x_values, y_values, 1)  # Fit a first-degree polynomial (line)
+        poly_1 = np.poly1d(coefficients_1)
+        ax2.plot(np.unique(x_values), poly_1(np.unique(x_values)), color='r', label='Line of Best Fit')
+        # Add labels and title
+        ax2.set_xlabel('Number of words in report transcript')
+        ax2.set_ylabel('Time taken for record expansion (s)')
+        ax2.set_title('Plot Of Average Time Taken For Record Expansion vs Number Of Search Terms Used')
+        # Show the plot
+        ax2.grid(True)
+        ax2.legend()
+        #plt.show()
+
+        # 3rd Graph
+        message_box = QMessageBox()
+        message_box.setWindowTitle('Average Search Time')
+        num_records = [item[0] for item in search_times]
+        second_numbers = [item[1] for item in search_times]
+        avg_time = np.mean(second_numbers)
+        message_box.setText(f"Number of records: {num_records[0]} \nAverage time taken: {avg_time:.2f} seconds")
+        message_box.exec()
+
+        # 4th Graph
+        sizes = [len(approved), len(rejected)]  # Your two numbers
+        labels = ['Correct', 'Incorrect']  # Labels for the categories
+        colours = ['green', 'red']  # Colors for the categories
+        total_records = sum(sizes)
+        # Plot
+        fig3 = plt.figure()
+        ax3 = fig3.add_subplot(111)
+        ax3.pie(sizes, labels=labels, colors=colours, autopct='%1.1f%%', startangle=140)
+        term = self.ent_manual.toPlainText()
+        ax3.set_title(f"Search accuracy for: {term}")
+        ax3.text(-1, -1.25, f'Total Records: {total_records}', fontsize=12, color='black', ha='center')
+        plt.show()
+
+    def approve_button_clicked(self):
+        selected_items = self.table_results.selectedIndexes()
+        for index in selected_items:
+            # Get the row and column index of each selected cell
+            row = index.row()                                   # Retrieve the row of selected record
+            column = index.column()                             # Retrieve column of the selected record
+            if column != 0:                                     # If it isnt column zero, present an error
+                self.index_error.exec()
+                return
+            else:    
+                # Get the data of the selected cell and proceed
+                data = self.table_results.model().data(index, role=Qt.ItemDataRole.DisplayRole)
+        if data not in approved and data not in rejected:
+            approved.append(data)
+        else:
+            pass
+
+    def decline_button_clicked(self):
+        selected_items = self.table_results.selectedIndexes()
+        for index in selected_items:
+            # Get the row and column index of each selected cell
+            row = index.row()                                   # Retrieve the row of selected record
+            column = index.column()                             # Retrieve column of the selected record
+            if column != 0:                                     # If it isnt column zero, present an error
+                self.index_error.exec()
+                return
+            else:    
+                # Get the data of the selected cell and proceed
+                data = self.table_results.model().data(index, role=Qt.ItemDataRole.DisplayRole)
+        if data not in rejected and data not in approved:
+            rejected.append(data)
+        else:
+            pass
+    
+    def searchall_button_clicked(self):
+        # Retrieve the selected dataset, and throw an error if not selected. Otherwise retrieve dataset
+        selected_dataset = self.comboBox.currentText()
+        if selected_dataset == "Select":
+            self.dataset_error.exec()               # Error popup for no dataset selected
+            return                                  # End function
+        else:
+            data = data_retrieval(selected_dataset) # Retrieve the dataset
+
+        # Check for duplicate data
+        duplicates_exist = data['CRIS_No'].duplicated().any()   # Checks dataframe for any duplicates
+        if duplicates_exist:
+            self.duplicate_error.exec()                         # If so, popup an error but proceed anyway
+        else:
+            pass                                                # Otherwise proceed
+
+
+        # Check to see if they have selected a date to filter by
+        filtering_date = self.dateCombo.currentText()                                   # Access if they want to filter the date
+        target_date = self.dateEdit.date().toString()                                   # Access current date value and convert to string
+        
+        if (filtering_date == "Before"):                                                # IF Before is selected
+            data['Events_date'] = pd.to_datetime(data['Events_date'], format='%d/%m/%Y')# Format EventsDate column to appropriate format
+            data = data[data['Events_date'] <= target_date]                             # Filter dataframe for less than
+            data['Events_date'] = data['Events_date'].dt.strftime("%d/%m/%Y")           # Reset the date formatting
+        
+        elif (filtering_date == "After"):                                               # IF After is selected
+            data['Events_date'] = pd.to_datetime(data['Events_date'], format='%d/%m/%Y')# Format EventsDate column to appropriate format
+            data = data[data['Events_date'] >= target_date]                             # Filter dataframe for greater than
+            data['Events_date'] = data['Events_date'].dt.strftime("%d/%m/%Y")           # Reset the date formatting
+        else:
+            pass
+    
+        # Anonymise data if anonymise check box is checked [forenames,surname,dob,age,NHS_no]
+        if self.check_anonymise.isChecked():
+            data['forenames'] = "John"
+            data['surname'] = "Doe"
+            data['DOB'] = "DD/MM/YYYY"
+            data['Age_at_Exam'] = "NN"
+            data['NHS_No'] = "AAA BBB CCC"
+        else:
+            pass
+            
+        # Retrieve the line, and if this is empty, then throw an error. Otherwise create expression object
+        man = self.ent_manual.toPlainText()         # Read the text in the search bar
+        conn = sqlite3.connect("UserManagement.db") # Connect to the user management database
+        c = conn.cursor()                           # Setup a cursor, 'c'
+        c.execute("SELECT * FROM variables")        # Select all from variables
+        variables = c.fetchall()                    # Select all values from database
+        
+        for var, text in variables:                 # If there is a variable in the text...
+            man = man.replace(var, text)            # replace it with the associated text from the database
+
+        if man.strip() == "":                       # If the manual line is empty...
+            self.manual_error.exec()                # Popup an error and terminate the funciton
+            return
+        else:                                       # Otherwise...
+            expr = Expression()                     # Create an expression object 
+            result = expr.parse_string(man)         # Parse the manual entry line to produce the regex expression
+        
+        # Search the results and filter the dataframe by values which are true under the expression
+        results = df_search(data, result)
+        condition = results['term_found'] == False
+        filtered_df = results[condition]
+
+        # Sorting Algorithms
+        sorting = self.sortCombo.currentText()
+        if sorting == "Default":
+            pass
+        # Age
+        elif sorting == "Age - Ascending":
+            filtered_df = filtered_df.sort_values(by='Age_at_Exam', ascending=True)
+        elif sorting == "Age - Descending":
+            filtered_df = filtered_df.sort_values(by='Age_at_Exam', ascending=False)
+        # CRIS_No
+        elif sorting == "CRISNo - Ascending":
+            filtered_df = filtered_df.sort_values(by='CRIS_No', ascending=True)
+        elif sorting == "CRISNo - Descending":
+            filtered_df = filtered_df.sort_values(by='CRIS_No', ascending=False)
+        # Date
+        elif sorting == "Date - Ascending":
+            filtered_df['Events_date'] = pd.to_datetime(filtered_df['Events_date'], format='%d/%m/%Y')# Format EventsDate column to appropriate format
+            filtered_df = filtered_df.sort_values(by='Events_date', ascending=True)                   # Filter dataframe for less than
+            filtered_df['Events_date'] = filtered_df['Events_date'].dt.strftime("%d/%m/%Y")         
+        elif sorting == "Date - Descending":
+            filtered_df['Events_date'] = pd.to_datetime(filtered_df['Events_date'], format='%d/%m/%Y')# Format EventsDate column to appropriate format
+            filtered_df = filtered_df.sort_values(by='Events_date', ascending=False)                  # Filter dataframe for less than
+            filtered_df['Events_date'] = filtered_df['Events_date'].dt.strftime("%d/%m/%Y") 
+        # Event Key
+        elif sorting == "EventKey - Ascending":
+            filtered_df = filtered_df.sort_values(by='Event_Key', ascending=True)
+        elif sorting == "EventKey - Descending":
+            filtered_df = filtered_df.sort_values(by='Event_Key', ascending=False)
+        # Forename
+        elif sorting == "Forename - Ascending":
+            filtered_df = filtered_df.sort_values(by='forenames', ascending=True)
+        elif sorting == "Forename - Descending":
+            filtered_df = filtered_df.sort_values(by='forenames', ascending=False)
+        # NHS No
+        elif sorting == "NHSNo - Ascending":
+            filtered_df = filtered_df.sort_values(by='NHS_No', ascending=True)
+        elif sorting == "NHSNo - Descending":
+            filtered_df = filtered_df.sort_values(by='NHS_No', ascending=False)
+        # NHS No
+        elif sorting == "Surname - Ascending":
+            filtered_df = filtered_df.sort_values(by='surname', ascending=True)
+        elif sorting == "Surname - Descending":
+            filtered_df = filtered_df.sort_values(by='surname', ascending=False)
+
+        if len(filtered_df != 0):
+            self.model = TableModel(filtered_df)
+            self.table_results.setModel(self.model)
+            self.table_results.resizeColumnsToContents()
+        else:
+            self.nothing_error.exec() # Executes if no results for searched expression   
+
+    def original_button_clicked(self):
+        selected_items = self.table_results.selectedIndexes()
+        selected_dataset = self.comboBox.currentText()
+        for index in selected_items:
+            # Get the row and column index of each selected cell
+            row = index.row()                                   # Retrieve the row of selected record
+            column = index.column()                             # Retrieve column of the selected record
+            if column != 0:                                     # If it isnt column zero, present an error
+                self.index_error.exec()
+                return
+            else:    
+                # Get the data of the selected cell and proceed
+                data = self.table_results.model().data(index, role=Qt.ItemDataRole.DisplayRole)
+        file_path = selected_dataset
+        df_data0 = pd.read_csv('data/'+file_path)
+        df_data0.fillna('', inplace=True)
+        result = df_data0[df_data0['CRIS_No'] == int(data)]
+        value = result['Report']
+        message_box = QMessageBox()
+        message_box.setWindowTitle('Original Report')
+        message_box.setText(str(value.iloc[0]))
+        message_box.exec()
 
 class HelpWindow(QtWidgets.QMainWindow, Ui_Help):
     """
@@ -839,6 +1132,3 @@ try:
         app.exec()
 except:
     app.quit()
-
-
-

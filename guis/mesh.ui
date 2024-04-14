@@ -107,6 +107,12 @@
       <height>291</height>
      </rect>
     </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Plain</enum>
+    </property>
    </widget>
    <widget class="QPushButton" name="but_close">
     <property name="geometry">

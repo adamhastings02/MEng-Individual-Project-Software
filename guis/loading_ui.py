@@ -78,7 +78,7 @@ class Ui_Loading(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.lab_program.setText(_translate("MainWindow", "NLP ReportGenius"))
+        self.lab_program.setText(_translate("MainWindow", "RADEX"))
         self.leedslogo.setToolTip(_translate("MainWindow", "An image showing the University of Leeds logo"))
         self.nhslogo.setToolTip(_translate("MainWindow", "An image showing the NHS logo"))
         self.lab_loading.setText(_translate("MainWindow", "Loading..."))

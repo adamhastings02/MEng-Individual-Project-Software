@@ -18,6 +18,9 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="toolTip">
+   <string/>
+  </property>
   <property name="layoutDirection">
    <enum>Qt::LeftToRight</enum>
   </property>
@@ -38,6 +41,9 @@
      <font>
       <pointsize>10</pointsize>
      </font>
+    </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt;Click to search for records using the typed expression&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
     <property name="layoutDirection">
      <enum>Qt::RightToLeft</enum>
@@ -100,6 +106,11 @@
     <item>
      <property name="text">
       <string>reports.csv</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>volumetesting.csv</string>
      </property>
     </item>
    </widget>
@@ -214,6 +225,9 @@
       <pointsize>10</pointsize>
      </font>
     </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt;Export selected data to outputdata file&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
     <property name="styleSheet">
      <string notr="true">background-color: lightgrey;</string>
     </property>
@@ -295,6 +309,9 @@
       <pointsize>10</pointsize>
      </font>
     </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt;Clear all boxes and tables&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
     <property name="styleSheet">
      <string notr="true">background-color: lightgrey;</string>
     </property>
@@ -305,9 +322,9 @@
    <widget class="QPushButton" name="but_help">
     <property name="geometry">
      <rect>
-      <x>810</x>
+      <x>660</x>
       <y>720</y>
-      <width>131</width>
+      <width>91</width>
       <height>28</height>
      </rect>
     </property>
@@ -337,6 +354,9 @@
       <pointsize>10</pointsize>
      </font>
     </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt;Extracts the record of the highlighted CRIS_No, highlights it, and displays it in the top right box&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
     <property name="styleSheet">
      <string notr="true">background-color: lightgrey;</string>
     </property>
@@ -347,7 +367,7 @@
    <widget class="QPushButton" name="but_star">
     <property name="geometry">
      <rect>
-      <x>100</x>
+      <x>30</x>
       <y>150</y>
       <width>93</width>
       <height>28</height>
@@ -357,6 +377,9 @@
      <font>
       <pointsize>10</pointsize>
      </font>
+    </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt;The * wildcard matches any number of characters&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
     <property name="text">
      <string>*</string>
@@ -365,61 +388,7 @@
    <widget class="QPushButton" name="but_or">
     <property name="geometry">
      <rect>
-      <x>320</x>
-      <y>180</y>
-      <width>93</width>
-      <height>28</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>10</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>OR</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="but_not">
-    <property name="geometry">
-     <rect>
-      <x>320</x>
-      <y>210</y>
-      <width>93</width>
-      <height>28</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>10</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>NOT</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="but_except">
-    <property name="geometry">
-     <rect>
-      <x>320</x>
-      <y>240</y>
-      <width>93</width>
-      <height>28</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>10</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>EXCEPT</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="but_and">
-    <property name="geometry">
-     <rect>
-      <x>320</x>
+      <x>340</x>
       <y>150</y>
       <width>93</width>
       <height>28</height>
@@ -430,14 +399,17 @@
       <pointsize>10</pointsize>
      </font>
     </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt;The logical OR operator returns values if either of the adjacent terms occur in the report text&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
     <property name="text">
-     <string>AND</string>
+     <string>OR</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="but_q">
+   <widget class="QPushButton" name="but_not">
     <property name="geometry">
      <rect>
-      <x>100</x>
+      <x>240</x>
       <y>180</y>
       <width>93</width>
       <height>28</height>
@@ -448,15 +420,18 @@
       <pointsize>10</pointsize>
      </font>
     </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt;The logical NOT operator returns values if the proceeding term isn't there&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
     <property name="text">
-     <string>?</string>
+     <string>NOT</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="but_und">
+   <widget class="QPushButton" name="but_except">
     <property name="geometry">
      <rect>
-      <x>100</x>
-      <y>210</y>
+      <x>340</x>
+      <y>180</y>
       <width>93</width>
       <height>28</height>
      </rect>
@@ -466,6 +441,72 @@
       <pointsize>10</pointsize>
      </font>
     </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The EXCEPT operator returns values if the proceeding value doesn't occur in the report text&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+    <property name="text">
+     <string>EXCEPT</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="but_and">
+    <property name="geometry">
+     <rect>
+      <x>240</x>
+      <y>150</y>
+      <width>93</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt;The logical AND operator returns values if both words adjacent to it occur in the report&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+    <property name="text">
+     <string>AND</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="but_q">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>150</y>
+      <width>93</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt;The ? wildcard matches any singular character&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+    <property name="text">
+     <string>?</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="but_und">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>180</y>
+      <width>93</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt;The _ wildcard enforces a word boundary&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
     <property name="text">
      <string>_</string>
     </property>
@@ -473,7 +514,7 @@
    <widget class="QLabel" name="lab_query_2">
     <property name="geometry">
      <rect>
-      <x>110</x>
+      <x>30</x>
       <y>120</y>
       <width>81</width>
       <height>21</height>
@@ -492,7 +533,7 @@
    <widget class="QLabel" name="lab_query_3">
     <property name="geometry">
      <rect>
-      <x>320</x>
+      <x>240</x>
       <y>120</y>
       <width>101</width>
       <height>21</height>
@@ -522,6 +563,9 @@
       <pointsize>10</pointsize>
      </font>
     </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt;Search for related terms to a word&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
     <property name="styleSheet">
      <string notr="true">background-color: lightgrey;</string>
     </property>
@@ -532,8 +576,8 @@
    <widget class="QPushButton" name="but_near">
     <property name="geometry">
      <rect>
-      <x>100</x>
-      <y>240</y>
+      <x>130</x>
+      <y>180</y>
       <width>93</width>
       <height>28</height>
      </rect>
@@ -550,8 +594,8 @@
    <widget class="QPushButton" name="but_variables">
     <property name="geometry">
      <rect>
-      <x>100</x>
-      <y>270</y>
+      <x>180</x>
+      <y>230</y>
       <width>93</width>
       <height>28</height>
      </rect>
@@ -560,6 +604,9 @@
      <font>
       <pointsize>10</pointsize>
      </font>
+    </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt;Click to launch a window to view/add/delete shorthand variables which represent larger searches&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
     <property name="text">
      <string>Variables</string>
@@ -568,8 +615,8 @@
    <widget class="QPushButton" name="but_custom">
     <property name="geometry">
      <rect>
-      <x>320</x>
-      <y>270</y>
+      <x>340</x>
+      <y>230</y>
       <width>93</width>
       <height>28</height>
      </rect>
@@ -578,6 +625,9 @@
      <font>
       <pointsize>10</pointsize>
      </font>
+    </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt;Click here to launch a window to copy/add/delete previous custom searches&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
     <property name="text">
      <string>Custom</string>
@@ -597,6 +647,9 @@
       <pointsize>10</pointsize>
      </font>
     </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt;Check this box to anonymise the search results&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
     <property name="text">
      <string>Anonymise</string>
     </property>
@@ -605,7 +658,7 @@
     <property name="geometry">
      <rect>
       <x>660</x>
-      <y>720</y>
+      <y>680</y>
       <width>93</width>
       <height>28</height>
      </rect>
@@ -614,6 +667,9 @@
      <font>
       <pointsize>10</pointsize>
      </font>
+    </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt;Quit the program&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
     <property name="styleSheet">
      <string notr="true">background-color: lightgrey;</string>
@@ -635,6 +691,9 @@
      <font>
       <pointsize>10</pointsize>
      </font>
+    </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt;Decline the results of the REGEX search&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
     <property name="layoutDirection">
      <enum>Qt::RightToLeft</enum>
@@ -659,6 +718,9 @@
      <font>
       <pointsize>10</pointsize>
      </font>
+    </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt;Approve the result of the REGEX search&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
     <property name="layoutDirection">
      <enum>Qt::RightToLeft</enum>
@@ -751,9 +813,9 @@
    <widget class="QComboBox" name="matchesCombo">
     <property name="geometry">
      <rect>
-      <x>840</x>
+      <x>810</x>
       <y>310</y>
-      <width>111</width>
+      <width>141</width>
       <height>31</height>
      </rect>
     </property>
@@ -761,6 +823,9 @@
      <font>
       <pointsize>10</pointsize>
      </font>
+    </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt;Choose the term you wish to change the colour highlighting of&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
     <item>
      <property name="text">
@@ -771,7 +836,7 @@
    <widget class="QPushButton" name="but_colours">
     <property name="geometry">
      <rect>
-      <x>972</x>
+      <x>960</x>
       <y>310</y>
       <width>111</width>
       <height>28</height>
@@ -782,6 +847,9 @@
       <pointsize>10</pointsize>
      </font>
     </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt;Launches the colour selecting window&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
     <property name="text">
      <string>Colour Select</string>
     </property>
@@ -789,7 +857,7 @@
    <widget class="QLabel" name="lab_sort">
     <property name="geometry">
      <rect>
-      <x>490</x>
+      <x>500</x>
       <y>320</y>
       <width>71</width>
       <height>21</height>
@@ -807,9 +875,9 @@
    <widget class="QComboBox" name="sortCombo">
     <property name="geometry">
      <rect>
-      <x>580</x>
+      <x>570</x>
       <y>320</y>
-      <width>151</width>
+      <width>161</width>
       <height>21</height>
      </rect>
     </property>
@@ -817,6 +885,9 @@
      <font>
       <pointsize>10</pointsize>
      </font>
+    </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt;Choose a column to sort by&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
     <item>
      <property name="text">
@@ -897,14 +968,94 @@
    <widget class="QPushButton" name="but_filtering">
     <property name="geometry">
      <rect>
-      <x>660</x>
-      <y>680</y>
+      <x>30</x>
+      <y>230</y>
       <width>93</width>
       <height>28</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
     <property name="text">
      <string>Filtering</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="but_performance">
+    <property name="geometry">
+     <rect>
+      <x>810</x>
+      <y>720</y>
+      <width>131</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: lightgrey;</string>
+    </property>
+    <property name="text">
+     <string>Performance</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="but_searchall">
+    <property name="geometry">
+     <rect>
+      <x>1070</x>
+      <y>410</y>
+      <width>93</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt;Click to search for all records using the typed expression, even if False&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::RightToLeft</enum>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: lightgrey;</string>
+    </property>
+    <property name="text">
+     <string>Search All</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="but_original">
+    <property name="geometry">
+     <rect>
+      <x>942</x>
+      <y>410</y>
+      <width>111</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:9pt;&quot;&gt;Click to search for all records using the typed expression, even if False&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::RightToLeft</enum>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: lightgrey;</string>
+    </property>
+    <property name="text">
+     <string>View Original</string>
     </property>
    </widget>
   </widget>

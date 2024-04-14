@@ -34,7 +34,7 @@
      </font>
     </property>
     <property name="text">
-     <string>NLP ReportGenius</string>
+     <string>RADEX</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>

@@ -45,7 +45,7 @@ class Ui_Custom(object):
         self.but_create.setStyleSheet("background-color: lightgrey;")
         self.but_create.setObjectName("but_create")
         self.lab_program = QtWidgets.QLabel(parent=self.centralwidget)
-        self.lab_program.setGeometry(QtCore.QRect(250, 20, 421, 61))
+        self.lab_program.setGeometry(QtCore.QRect(270, 20, 421, 61))
         font = QtGui.QFont()
         font.setPointSize(24)
         font.setBold(False)

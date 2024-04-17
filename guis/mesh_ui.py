@@ -9,10 +9,10 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 
 
-class Ui_MainWindow(object):
+class Ui_Mesh(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1061, 589)
+        MainWindow.resize(1112, 640)
         MainWindow.setStyleSheet("background-color: beige;")
         self.centralwidget = QtWidgets.QWidget(parent=MainWindow)
         self.centralwidget.setObjectName("centralwidget")
@@ -46,10 +46,15 @@ class Ui_MainWindow(object):
         self.but_search.setStyleSheet("background-color: lightgrey;")
         self.but_search.setObjectName("but_search")
         self.textBrowser = QtWidgets.QTextBrowser(parent=self.centralwidget)
-        self.textBrowser.setGeometry(QtCore.QRect(130, 170, 811, 291))
+        self.textBrowser.setGeometry(QtCore.QRect(180, 190, 721, 261))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.textBrowser.setFont(font)
+        self.textBrowser.setFrameShape(QtWidgets.QFrame.Shape.Box)
+        self.textBrowser.setFrameShadow(QtWidgets.QFrame.Shadow.Plain)
         self.textBrowser.setObjectName("textBrowser")
         self.but_close = QtWidgets.QPushButton(parent=self.centralwidget)
-        self.but_close.setGeometry(QtCore.QRect(490, 480, 93, 28))
+        self.but_close.setGeometry(QtCore.QRect(490, 520, 93, 28))
         font = QtGui.QFont()
         font.setPointSize(10)
         self.but_close.setFont(font)
@@ -57,7 +62,7 @@ class Ui_MainWindow(object):
         self.but_close.setObjectName("but_close")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(parent=MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1061, 26))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1112, 26))
         self.menubar.setObjectName("menubar")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(parent=MainWindow)

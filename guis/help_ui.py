@@ -12,18 +12,18 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 class Ui_Help(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1112, 851)
+        MainWindow.resize(1374, 866)
         MainWindow.setStyleSheet("background-color: beige;")
         self.centralwidget = QtWidgets.QWidget(parent=MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.textBrowser = QtWidgets.QTextBrowser(parent=self.centralwidget)
-        self.textBrowser.setGeometry(QtCore.QRect(10, 0, 1091, 731))
+        self.textBrowser.setGeometry(QtCore.QRect(10, 0, 1351, 641))
         self.textBrowser.setFrameShape(QtWidgets.QFrame.Shape.NoFrame)
         self.textBrowser.setFrameShadow(QtWidgets.QFrame.Shadow.Plain)
         self.textBrowser.setLineWidth(2)
         self.textBrowser.setObjectName("textBrowser")
         self.but_close = QtWidgets.QPushButton(parent=self.centralwidget)
-        self.but_close.setGeometry(QtCore.QRect(500, 750, 93, 28))
+        self.but_close.setGeometry(QtCore.QRect(650, 650, 93, 28))
         font = QtGui.QFont()
         font.setPointSize(10)
         self.but_close.setFont(font)
@@ -32,7 +32,7 @@ class Ui_Help(object):
         self.but_close.setObjectName("but_close")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(parent=MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1112, 26))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1374, 26))
         self.menubar.setObjectName("menubar")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(parent=MainWindow)
@@ -74,7 +74,7 @@ class Ui_Help(object):
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt;\">14. Once you are finished, you can click the X in the top right, or click the Quit button at the bottom.</span></p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;\"><br /></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; text-decoration: underline;\">Important Information</span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt;\">NLP ReportGenius is an offline program for personal/institutional use only.</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt;\">RADEX is an offline program for personal/institutional use only.</span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt;\">All user accounts, output data and searches are stored in encrypted databases / files. </span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt;\">If you have any suggested improvements to the tool, please contact the program admininstrator. </span></p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;\"><br /></p>\n"

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1061</width>
-    <height>589</height>
+    <width>1112</width>
+    <height>640</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -101,11 +101,16 @@
    <widget class="QTextBrowser" name="textBrowser">
     <property name="geometry">
      <rect>
-      <x>130</x>
-      <y>170</y>
-      <width>811</width>
-      <height>291</height>
+      <x>180</x>
+      <y>190</y>
+      <width>721</width>
+      <height>261</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
     </property>
     <property name="frameShape">
      <enum>QFrame::Box</enum>
@@ -118,7 +123,7 @@
     <property name="geometry">
      <rect>
       <x>490</x>
-      <y>480</y>
+      <y>520</y>
       <width>93</width>
       <height>28</height>
      </rect>
@@ -144,7 +149,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1061</width>
+     <width>1112</width>
      <height>26</height>
     </rect>
    </property>

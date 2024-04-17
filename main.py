@@ -24,7 +24,7 @@ from guis.mainwindow_ui import Ui_MainWindow
 from guis.loading_ui import Ui_Loading
 from guis.login_ui import Ui_Login
 from guis.help_ui import Ui_Help
-from guis.Mesh import Ui_Mesh
+from guis.mesh_ui import Ui_Mesh
 from guis.variables_ui import Ui_Variables
 from guis.custom_ui import Ui_Custom
 # RADEX Tool Imports
@@ -142,7 +142,7 @@ def data_retrieval(dataset):
     
     #CLEANED DATA
     df_data = clean_dataframe(df_data0, [column_report], 
-                            drop_duplicates=True, # drop duplicate entries
+                            drop_duplicates=True, # drop duplicate entries // CHANGE
                             drop_nulls=True, # drop empty reports
                             drop_negatives=True, # remove negated phrases
                             drop_ambiguous=True # remove phrases with ambiguous negation
@@ -150,7 +150,7 @@ def data_retrieval(dataset):
 
     #STOP-WORD REMOVAL
     stop_words = pd.read_csv('data/stopwords.csv').T.values[0]
-    df_data2 = remove_stopwords(df_data, [column_report]) # This removes stopwords
+    df_data2 = remove_stopwords(df_data, [column_report]) # This rem5oves stopwords
     
     return df_data2
 

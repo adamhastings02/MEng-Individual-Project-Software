@@ -1355,10 +1355,6 @@
    'C:\\Users\\Adam\\AppData\\Local\\Programs\\Python\\Python310\\lib\\glob.py',
    'PYMODULE'),
   ('guis', '-', 'PYMODULE'),
-  ('guis.Mesh',
-   'C:\\Users\\Adam\\OneDrive - University of Leeds\\University Of Leeds Year '
-   '4\\5870M - Individual Project\\Python Files\\guis\\Mesh.py',
-   'PYMODULE'),
   ('guis.custom_ui',
    'C:\\Users\\Adam\\OneDrive - University of Leeds\\University Of Leeds Year '
    '4\\5870M - Individual Project\\Python Files\\guis\\custom_ui.py',
@@ -1378,6 +1374,10 @@
   ('guis.mainwindow_ui',
    'C:\\Users\\Adam\\OneDrive - University of Leeds\\University Of Leeds Year '
    '4\\5870M - Individual Project\\Python Files\\guis\\mainwindow_ui.py',
+   'PYMODULE'),
+  ('guis.mesh_ui',
+   'C:\\Users\\Adam\\OneDrive - University of Leeds\\University Of Leeds Year '
+   '4\\5870M - Individual Project\\Python Files\\guis\\mesh_ui.py',
    'PYMODULE'),
   ('guis.variables_ui',
    'C:\\Users\\Adam\\OneDrive - University of Leeds\\University Of Leeds Year '

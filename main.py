@@ -1,3 +1,18 @@
+"""
+---------------------------------------------------------------------------------
+Program: RADEX Tool
+By: Adam Hastings
+Date: 01/11/2023 - 14/05/2024
+For: ELEC5870M - MEng Individual Project
+---------------------------------------------------------------------------------
+Description:
+---------------------------------------------------------------------------------
+This program presents a radiology report data extraction tool
+Rapidly scan datasets to highlight key information 
+Use this information to decide on future treatment for each anonymised patient
+GUI to operate the system, all instructions on usage can be found in help window
+--------------------------------------------------------------------------------- 
+"""
 # General Imports:
 import sys
 import re
@@ -8,7 +23,6 @@ from time import sleep
 import pandas as pd 
 import numpy as np
 import matplotlib.pyplot as plt
-import random
 from datetime import datetime
 import time
 # Databse Imports:
@@ -27,32 +41,33 @@ from guis.help_ui import Ui_Help
 from guis.mesh_ui import Ui_Mesh
 from guis.variables_ui import Ui_Variables
 from guis.custom_ui import Ui_Custom
-# RADEX Tool Imports
+# RADEX Tool Imports:
 from nlprules.preprocessing import clean_dataframe, remove_stopwords, remove_negated_phrases
 from nlprules.radexpressions import evaluate_regex, get_regex_proximity, get_regex_wildcards, string_search
 from nlprules.dfsearch import check_all_matches, search_dataframe, evaluate_sentences, list_to_string
 from nlprules.expression import Expression
 # Globals declaration list:
-global colourdict
+global colourdict           # A dictionary to store the custom colour choices of the user
 colourdict = {"PATHOGEN": "#F67DE3", "MEDICINE": "#7DF6D9", "MEDICALCONDITION":"#a6e22d", "QUANTITY":"#ffffff"}
-global elapsed_times
+global elapsed_times        # A list to contain the elapsed times of searches for performance analysis
 elapsed_times = []
-global lengths_times
+global lengths_times        # A list to contain the times of expand record based on number of words in transcription
 lengths_times = []
-global search_times
+global search_times         # A list to contain the time taken to perform a search based on number of words in search
 search_times = []
-global approved
+global approved             # A list to store any records that are approved
 approved = []
-global rejected
+global rejected             # A list to store any records that are rejected
 rejected = []
+preprocess = (True, True, True, True)   # A tuple containing the user preferences of preprocessing (defaults to True)
 
 # Useful Commands:
 # pyuic6 mainwindow.ui -o MainWindow.py
 # pipenv shell
 # python main.py
 # pyinstaller --onefile main.py
-# To export as an executable, type the above command, and copy across the data, guis, negex
-# and nlprules folders to dist folder. May need more folders but still TBD
+# To export as an executable, type the above command, and copy across the folders from
+# this entire directory
 
 # Program Begin
 
@@ -88,6 +103,12 @@ def init_errors(self):
     self.duplicate_error.setIcon(QMessageBox.Icon.Critical)
     self.duplicate_error.setWindowTitle('Error')
     self.duplicate_error.setText('Duplicates Detected! Please merge any reports with matching CRIS Numbers')
+
+    # Error for invalid search
+    self.invalid_error = QMessageBox()
+    self.invalid_error.setIcon(QMessageBox.Icon.Critical)
+    self.invalid_error.setWindowTitle('Error')
+    self.invalid_error.setText('Search Failed. Please try again')
 
     # Info pop-up for no records found after a search
     self.nothing_error = QMessageBox()
@@ -142,10 +163,10 @@ def data_retrieval(dataset):
     
     #CLEANED DATA
     df_data = clean_dataframe(df_data0, [column_report], 
-                            drop_duplicates=True, # drop duplicate entries // CHANGE
-                            drop_nulls=True, # drop empty reports
-                            drop_negatives=True, # remove negated phrases
-                            drop_ambiguous=True # remove phrases with ambiguous negation
+                            drop_duplicates=preprocess[0], # drop duplicate entries // CHANGE
+                            drop_nulls=preprocess[1], # drop empty reports
+                            drop_negatives=preprocess[2], # remove negated phrases
+                            drop_ambiguous=preprocess[3] # remove phrases with ambiguous negation
                             )
 
     #STOP-WORD REMOVAL
@@ -172,6 +193,15 @@ def df_search(data, expr):
     return searched                                     # Return the new dataframe
 
 def remove_unwanted_terms(lst):
+    """
+    Removes unwanted values from a list
+
+    Args:
+        lst: The list you wish to scan for unwanted items
+
+    Returns:
+        result: The list containing the unwanted terms
+    """
     result = []
     for item in lst:
         if isinstance(item, list):
@@ -185,6 +215,15 @@ def remove_unwanted_terms(lst):
     return result
 
 def count_terms(lst):
+    """
+    Counts the number of terms in a nested list
+
+    Args:
+        lst: The nested list you wish to count how many items are in
+
+    Returns:
+        count: An integer representing the number of terms
+    """
     count = 0
     for item in lst:
         if isinstance(item, list):
@@ -192,6 +231,31 @@ def count_terms(lst):
         else:
             count += 1
     return count
+
+def convert_date(date):
+    """
+    Converts dates from MM/DD/YYYY to DD/MM/YYYY using regular expressions \n
+    Only works if ..//XX/.. 13 <= XX <= 31, otherwise its treated as correct \n
+    Otherwise there is encouragement elsewhere to ensure all dates are in UK format, not americanised
+
+    Args:
+        date: The input date, to check if it is americanised
+
+    Returns:
+        data: The output date, which is either the same if in UK format or converted if middle value is between 13 and 31 inclusive
+    """
+    # Regular expression to match MM/DD/YYYY format
+    mm_dd_yyyy_pattern = r'(\d{2})/(\d{2})/(\d{4})'
+    # Check if the date matches MM/DD/YYYY format
+    if re.match(mm_dd_yyyy_pattern, date):
+        # If it matches, extract month, day, and year
+        month, day, year = re.match(mm_dd_yyyy_pattern, date).groups()
+        # Check if the day part is between 13 and 31
+        if 13 <= int(day) <= 31:
+            # Return the date in DD/MM/YYYY format
+            return f'{day}/{month}/{year}'
+    # If the date does not match the condition, return as is
+    return date
 
 class TableModel(QtCore.QAbstractTableModel):
     """
@@ -202,18 +266,21 @@ class TableModel(QtCore.QAbstractTableModel):
         self._data = data
 
     def data(self, index, role):
+        # Return data
         if role == Qt.ItemDataRole.DisplayRole:
             value = self._data.iloc[index.row(), index.column()]
-            return str(value)
+            return str(value)   
 
     def rowCount(self, index):
-        return self._data.shape[0]
+        # Return the row count
+        return self._data.shape[0] 
 
     def columnCount(self, index):
+        # Return the column count
         return self._data.shape[1]
 
     def headerData(self, section, orientation, role):
-        # section is the index of the column/row.
+        # Set the data for the column headers. Section is the index of the column/row.
         if role == Qt.ItemDataRole.DisplayRole:
             if orientation == Qt.Orientation.Horizontal:
                 return str(self._data.columns[section])
@@ -304,37 +371,42 @@ class LoginWindow(QtWidgets.QMainWindow, Ui_Login):
 
 class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, *args, obj=None, **kwargs):
+        """
+        A function which initialises the main window and sets up function connections
+        """
         super(MainWindow, self).__init__(*args, **kwargs) 
-        self.setupUi(self)
-        self.showMaximized()
-        self.setStyleSheet("background-color: #F5F5DC;")
-        self.table_results.setStyleSheet("background-color: #F5F5DC;")
-        self.but_manual.clicked.connect(self.manual_button_clicked)
-        self.but_clear.clicked.connect(self.clear_button_clicked)
-        self.but_expand.clicked.connect(self.expand_button_clicked)
-        self.but_help.clicked.connect(self.help_button_clicked)
-        self.but_termfind.clicked.connect(self.term_button_clicked)
-        self.but_and.clicked.connect(self.and_button_clicked)
-        self.but_variables.clicked.connect(self.variables_button_clicked)
-        self.but_or.clicked.connect(self.or_button_clicked)
-        self.but_not.clicked.connect(self.not_button_clicked)
-        self.but_except.clicked.connect(self.except_button_clicked)
-        self.but_custom.clicked.connect(self.custom_button_clicked)
-        self.but_star.clicked.connect(self.star_button_clicked)
-        self.but_q.clicked.connect(self.q_button_clicked)
-        self.but_und.clicked.connect(self.und_button_clicked)
-        self.but_quit.clicked.connect(self.quit_button_clicked)
-        self.but_near.clicked.connect(self.near_button_clicked)
-        self.but_export.clicked.connect(self.export_button_clicked)
-        self.but_colours.clicked.connect(self.colours_button_clicked)
-        self.but_performance.clicked.connect(self.performance_button_clicked)
-        self.but_approve.clicked.connect(self.approve_button_clicked)
-        self.but_decline.clicked.connect(self.decline_button_clicked)
-        self.but_searchall.clicked.connect(self.searchall_button_clicked)
-        self.but_original.clicked.connect(self.original_button_clicked)
-        self.dateEdit.setDate(QDate.currentDate())
+        self.setupUi(self)                                                  # Setup UI
+        self.showMaximized()                                                # Maximise the window
+        self.setStyleSheet("background-color: #F5F5DC;")                    # Set beige background
+        self.table_results.setStyleSheet("background-color: #F5F5DC;")      # Set beige stylesheet
+        self.but_manual.clicked.connect(self.manual_button_clicked)         # Connect search button to function
+        self.but_clear.clicked.connect(self.clear_button_clicked)           # Connect clear button to function
+        self.but_expand.clicked.connect(self.expand_button_clicked)         # Connect expand record button to function
+        self.but_help.clicked.connect(self.help_button_clicked)             # Connect help button to window
+        self.but_termfind.clicked.connect(self.term_button_clicked)         # Connect termfinder button to window
+        self.but_and.clicked.connect(self.and_button_clicked)               # Connect and button to function
+        self.but_variables.clicked.connect(self.variables_button_clicked)   # Connect variables button to window
+        self.but_or.clicked.connect(self.or_button_clicked)                 # Connect or button to function
+        self.but_not.clicked.connect(self.not_button_clicked)               # Connect not button to function
+        self.but_except.clicked.connect(self.except_button_clicked)         # Connect except button to function
+        self.but_custom.clicked.connect(self.custom_button_clicked)         # Connect custom button to window
+        self.but_star.clicked.connect(self.star_button_clicked)             # Connect asteriks button to function
+        self.but_q.clicked.connect(self.q_button_clicked)                   # Connect question mark button to function
+        self.but_und.clicked.connect(self.und_button_clicked)               # Connect underscore button to function
+        self.but_quit.clicked.connect(self.quit_button_clicked)             # Connect quit button to function
+        self.but_near.clicked.connect(self.near_button_clicked)             # Connect near button to function
+        self.but_export.clicked.connect(self.export_button_clicked)         # Connect export button to function
+        self.but_colours.clicked.connect(self.colours_button_clicked)       # Connect colour select button to function
+        self.but_performance.clicked.connect(self.performance_button_clicked)# Connect performance button to function
+        self.but_approve.clicked.connect(self.approve_button_clicked)       # Connect approve button to function
+        self.but_decline.clicked.connect(self.decline_button_clicked)       # Connect decline button to function
+        self.but_searchall.clicked.connect(self.searchall_button_clicked)   # Connect search all false button to function
+        self.but_original.clicked.connect(self.original_button_clicked)     # Connect view original button to function
+        self.but_filtering.clicked.connect(self.preview_button_clicked)     # Connect preview button to function
+        self.but_prepro.clicked.connect(self.preprocess_button_clicked)     # Connect preprocessing options button to qdialog
+        self.dateEdit.setDate(QDate.currentDate())                          # Set the date edit as the current date
         
-        init_errors(self)
+        init_errors(self)                                                   # Initialise the error message boxes
 
     def manual_button_clicked(self):
         """
@@ -356,6 +428,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             pass                                                # Otherwise proceed
 
+        # Convert any dates that are in American Format
+        data['Events_date'] = data['Events_date'].apply(convert_date)   # Convert event date
+        data['DOB'] = data['DOB'].apply(convert_date)                   # Convert DOB
 
         # Check to see if they have selected a date to filter by
         filtering_date = self.dateCombo.currentText()                                   # Access if they want to filter the date
@@ -401,8 +476,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             result = expr.parse_string(man)         # Parse the manual entry line to produce the regex expression
         
         # Search the results and filter the dataframe by values which are true under the expression
-        results = df_search(data, result)
-        condition = results['term_found'] == True
+        try:
+            results = df_search(data, result)   # Search the dataframe
+        except ValueError:
+            self.invalid_error.exec()   # Display an error if theres an invalid search instead of crashing
+            return
+        condition = results['term_found'] == True   # Filter dataframe by matching records
         filtered_df = results[condition]
 
         # Sorting Algorithms
@@ -450,29 +529,36 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             filtered_df = filtered_df.sort_values(by='surname', ascending=False)
 
         if len(filtered_df != 0):
-            self.model = TableModel(filtered_df)
+            self.model = TableModel(filtered_df)    # If a record/s exist, populate the table with them
             self.table_results.setModel(self.model)
-            self.table_results.resizeColumnsToContents()
+            self.table_results.resizeColumnsToContents()    # Resize table to match 
         else:
             self.nothing_error.exec() # Executes if no results for searched expression
         
         # Store time to search value 
-        end_time = time.time()
-        elapsed_time = end_time-start_time
-        num_rows = len(data)
-        search_times.append((num_rows, elapsed_time))
+        end_time = time.time()                          # Stop timer
+        elapsed_time = end_time-start_time              # Determine elapsed time
+        num_rows = len(data)                            # Determine number of records
+        search_times.append((num_rows, elapsed_time))   # Append this data to search times dict (global)
      
     def clear_button_clicked(self):
+        """
+        A function which executes when the search button near the clear all button is clicked
+        """
         box_clear(self)
 
     def expand_button_clicked(self):
-        start_time = time.time()
-        selected_items = self.table_results.selectedIndexes()
-        selected_dataset = self.comboBox.currentText()
-        nlp_ner = spacy.load("model-best")
+        """
+        A function which executes when the expand record button is clicked \n
+        Puts the transcription of the record in the textEdit \n
+        Highlights the records using RegEx and NER
+        """
+        start_time = time.time()                                # Start a timer
+        selected_items = self.table_results.selectedIndexes()   # Get the row number index
+        selected_dataset = self.comboBox.currentText()          # Get the selected dataset
+        nlp_ner = spacy.load("model-best")                      # Load the NER model
         # Iterate over the selected indexes
         for index in selected_items:
-            # Get the row and column index of each selected cell
             row = index.row()                                   # Retrieve the row of selected record
             column = index.column()                             # Retrieve column of the selected record
             if column != 0:                                     # If it isnt column zero, present an error
@@ -483,26 +569,26 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 data = self.table_results.model().data(index, role=Qt.ItemDataRole.DisplayRole)
         
         # Find the transcription matching the description
-        df = data_retrieval(selected_dataset)
-        man = self.ent_manual.toPlainText()
+        df = data_retrieval(selected_dataset)                       # Retreive the dataset
+        man = self.ent_manual.toPlainText()                         # Convert search bar to plaintext
         conn = sqlite3.connect("UserManagement.db")                 # Connect to the user management database
         c = conn.cursor()                                           # Setup a cursor, 'c'
         c.execute("SELECT * FROM variables")
         variables = c.fetchall()                                    # Select all values from database
-        for var, text in variables:
-            man = man.replace(var, text)
+        for var, text in variables:                                 # If any variables occur in the search,
+            man = man.replace(var, text)                            # Assign them to their true value
 
-        if man.strip() == "":
+        if man.strip() == "":                                       # If search bar is empty, throw an error
             self.manual_error.exec()
             return
         else:    
-            expr = Expression()
-            result = expr.parse_string(man)
+            expr = Expression()                                     # Generate an expression object
+            result = expr.parse_string(man)                         # Parse the search bar to an expression
         
         # Search the results and filter the dataframe by values which are true under the expression
-        results = df_search(df, result)
-        result = results[results['CRIS_No'] == int(data)]
-        a = (result["term_found_matches"])
+        results = df_search(df, result)                             
+        result = results[results['CRIS_No'] == int(data)]           
+        a = (result["term_found_matches"])                          
         value = result['Report']
         b = a.iloc[0]
         text = value.iloc[0]
@@ -610,59 +696,92 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.help.show()
     
     def and_button_clicked(self):
+        """
+        A function which adds the AND expression to the search bar
+        """
         new_text = " AND "
         current_text = self.ent_manual.toPlainText()
         updated_text = current_text + new_text
         self.ent_manual.setPlainText(updated_text)
 
     def or_button_clicked(self):
+        """
+        A function which adds the OR expression to the search bar
+        """
         new_text = " OR "
         current_text = self.ent_manual.toPlainText()
         updated_text = current_text + new_text
         self.ent_manual.setPlainText(updated_text)
 
     def not_button_clicked(self):
+        """
+        A function which adds the NOT expression to the search bar
+        """
         new_text = " NOT "
         current_text = self.ent_manual.toPlainText()
         updated_text = current_text + new_text
         self.ent_manual.setPlainText(updated_text)
 
     def except_button_clicked(self):
+        """
+        A function which adds the NOT expression to the search bar
+        """
         new_text = " EXCEPT "
         current_text = self.ent_manual.toPlainText()
         updated_text = current_text + new_text
         self.ent_manual.setPlainText(updated_text)
 
     def custom_button_clicked(self):
+        """
+        A function which opens up the custom searches window
+        """
         self.custom = CustomWindow()
         self.custom.show()
 
     def star_button_clicked(self):
+        """
+        A function which adds the * wildcard to the search bar
+        """
         new_text = "* "
         current_text = self.ent_manual.toPlainText()
         updated_text = current_text + new_text
         self.ent_manual.setPlainText(updated_text)
 
     def q_button_clicked(self):
+        """
+        A function which adds the ? wildcard to the search bar
+        """
         new_text = "? "
         current_text = self.ent_manual.toPlainText()
         updated_text = current_text + new_text
         self.ent_manual.setPlainText(updated_text)
 
     def und_button_clicked(self):
+        """
+        A function which adds the _ wildcard to the search bar
+        """
         new_text = "_ "
         current_text = self.ent_manual.toPlainText()
         updated_text = current_text + new_text
         self.ent_manual.setPlainText(updated_text)
     
     def quit_button_clicked(self):
+        """
+        A function which quits the program
+        """
         app.quit()
 
     def variables_button_clicked(self):
+        """
+        A function which opens the variables viewer window
+        """
         self.variables = VariablesWindow()
         self.variables.show()
 
     def near_button_clicked(self):
+        """
+        A function which adds the NEAR expression to the search bar
+        """
         new_text = " NEAR "
         current_text = self.ent_manual.toPlainText()
         updated_text = current_text + new_text
@@ -693,8 +812,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                             drop_negatives=False,   
                             drop_ambiguous=False    
                             )
-        
         # Export the row to outputdata.csv, appending it without the header or row index
+        approval_status_value = ['Unlabelled']
+        df_data['Approval_status'] = approval_status_value
         df_data.to_csv('data/outputdata.csv', mode='a', header = False, index=False)
 
     def colours_button_clicked(self):
@@ -705,17 +825,18 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         colour = QColorDialog.getColor(Qt.GlobalColor.black, None, "Select Color")
         if colour.isValid():
             print("Selected Color:", colour.name())
-        word = self.matchesCombo.currentText()
-        colourdict[word] = colour.name()
+        word = self.matchesCombo.currentText()              # Extract the word needing to be highlighted
+        colourdict[word] = colour.name()                    # Permanently assign the new selected colour to that term
 
     def performance_button_clicked(self):
         """
         A function which executes when the performance button is clicked \n
         Plots various performance related metrics \n
-        At time of writing, this includes: 
+        This includes: 
             - Number of Searches vs Elapsed Time of Expand (Bar)
             - Number of Words in Report vs Elapsed Time of Expand (Scatter)
             - Average search time (Display)
+            - Accuracy of searches based on approves and declines (Pie)
         """
         # 1st graph
         # Convert the list of tuples to a NumPy array
@@ -737,7 +858,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         ax1.set_title('Plot Of Average Time Taken For Record Expansion vs Number Of Search Terms Used')
         for x, y in zip(x_values, y_values):
             ax1.text(x, y, f'{y:.2f}', ha='center', va='bottom')
-        #plt.show()
 
         # 2nd Graph 
         x_values = [item[0] for item in lengths_times]
@@ -752,11 +872,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # Add labels and title
         ax2.set_xlabel('Number of words in report transcript')
         ax2.set_ylabel('Time taken for record expansion (s)')
-        ax2.set_title('Plot Of Average Time Taken For Record Expansion vs Number Of Search Terms Used')
+        ax2.set_title('Plot Of Average Time Taken For Record Expansion vs Number Of Words in Record Transcription')
         # Show the plot
         ax2.grid(True)
         ax2.legend()
-        #plt.show()
 
         # 3rd Graph
         message_box = QMessageBox()
@@ -765,12 +884,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         second_numbers = [item[1] for item in search_times]
         avg_time = np.mean(second_numbers)
         message_box.setText(f"Number of records: {num_records[0]} \nAverage time taken: {avg_time:.2f} seconds")
-        message_box.exec()
+        message_box.exec()  # Show a textbox containing the number of records and the average search time in a:bc seconds format
 
         # 4th Graph
-        sizes = [len(approved), len(rejected)]  # Your two numbers
-        labels = ['Correct', 'Incorrect']  # Labels for the categories
-        colours = ['green', 'red']  # Colors for the categories
+        sizes = [len(approved), len(rejected)]  # Determine number of approves and declines
+        labels = ['Correct', 'Incorrect']       # Labels for the categories
+        colours = ['green', 'red']              # Colours for the categories
         total_records = sum(sizes)
         # Plot
         fig3 = plt.figure()
@@ -782,6 +901,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         plt.show()
 
     def approve_button_clicked(self):
+        """
+        A function which executes when the approve button is clicked \n
+        Approves the highlighted record, stores it in a dictionary and outputs it to the excel plugin
+        """
         selected_items = self.table_results.selectedIndexes()
         for index in selected_items:
             # Get the row and column index of each selected cell
@@ -795,10 +918,27 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 data = self.table_results.model().data(index, role=Qt.ItemDataRole.DisplayRole)
         if data not in approved and data not in rejected:
             approved.append(data)
+            file_path = self.comboBox.currentText()                 # Obtain selected dataset
+            df = pd.read_csv('data/'+file_path)                     # Convert it to a dataframe
+            record = df[df['CRIS_No'] == int(data)]                 # Filter the dataframe by the CRIS_No
+            df_data = clean_dataframe(record, ['Report'],           # Clean report column of whitespace
+                                drop_duplicates=False,  
+                                drop_nulls=True,        # Drop empty reports
+                                drop_negatives=False,   
+                                drop_ambiguous=False    
+                                )
+            # Export the row to outputdata.csv, appending it without the header or row index
+            approval_status_value = ['Approved']
+            df_data['Approval_status'] = approval_status_value
+            df_data.to_csv('data/outputdata.csv', mode='a', header = False, index=False)
         else:
             pass
 
     def decline_button_clicked(self):
+        """
+        A function which executes when the decline button is clicked \n
+        Declines the highlighted record, stores it in a dictionary and outputs it to the excel plugin
+        """
         selected_items = self.table_results.selectedIndexes()
         for index in selected_items:
             # Get the row and column index of each selected cell
@@ -812,10 +952,27 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 data = self.table_results.model().data(index, role=Qt.ItemDataRole.DisplayRole)
         if data not in rejected and data not in approved:
             rejected.append(data)
+            file_path = self.comboBox.currentText()                 # Obtain selected dataset
+            df = pd.read_csv('data/'+file_path)                     # Convert it to a dataframe
+            record = df[df['CRIS_No'] == int(data)]                 # Filter the dataframe by the CRIS_No
+            df_data = clean_dataframe(record, ['Report'],           # Clean report column of whitespace
+                                drop_duplicates=False,  
+                                drop_nulls=True,        # Drop empty reports
+                                drop_negatives=False,   
+                                drop_ambiguous=False    
+                                )
+            # Export the row to outputdata.csv, appending it without the header or row index
+            approval_status_value = ['Declined']
+            df_data['Approval_status'] = approval_status_value
+            df_data.to_csv('data/outputdata.csv', mode='a', header = False, index=False)
         else:
             pass
     
     def searchall_button_clicked(self):
+        """
+        A function which executes when the search all button is clicked \n
+        Searches for all false occurences of the search, where the terms havent occured
+        """
         # Retrieve the selected dataset, and throw an error if not selected. Otherwise retrieve dataset
         selected_dataset = self.comboBox.currentText()
         if selected_dataset == "Select":
@@ -831,6 +988,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             pass                                                # Otherwise proceed
 
+        # Convert any dates that are in American Format
+        data['Events_date'] = data['Events_date'].apply(convert_date)   # Convert event date
+        data['DOB'] = data['DOB'].apply(convert_date)                   # Convert DOB
 
         # Check to see if they have selected a date to filter by
         filtering_date = self.dateCombo.currentText()                                   # Access if they want to filter the date
@@ -932,6 +1092,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.nothing_error.exec() # Executes if no results for searched expression   
 
     def original_button_clicked(self):
+        """
+        A function which executes when the view original button is clicked \n
+        Presents a textbox containing the original, unedited and unhighlighted record
+        """
         selected_items = self.table_results.selectedIndexes()
         selected_dataset = self.comboBox.currentText()
         for index in selected_items:
@@ -954,18 +1118,47 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         message_box.setText(str(value.iloc[0]))
         message_box.exec()
 
+    def preview_button_clicked(self):
+        """
+        A function which executes when the preview button is clicked \n
+        Presents the head (top 5) records of the dataframe selected in the combo box
+        """
+        selected_dataset = self.comboBox.currentText()
+        if selected_dataset == "Select":
+            self.dataset_error.exec()               # Error popup for no dataset selected
+            return                                  # End function
+        else:
+            data = data_retrieval(selected_dataset) # Retrieve the dataset
+        head = data.head()
+        self.model = TableModel(head)
+        self.table_results.setModel(self.model)
+        self.table_results.resizeColumnsToContents()
+    
+    def preprocess_button_clicked(self):
+        """
+        A function which executes when the preprocessing options button is clicked \n
+        Presents a Qdialog where the user can custom select which preprocessing options they want (defaults all to True)
+        """
+        dialog = PreprocessCheckbox()
+        if dialog.exec() == QDialog.DialogCode.Accepted:
+            pres = dialog.get_checkbox_values()
+            global preprocess
+            preprocess = pres
+            
 class HelpWindow(QtWidgets.QMainWindow, Ui_Help):
     """
     This window appears after the 'Help' button is clicked.
     Contains instructions for the user if they need assistance
     """
     def __init__(self, *args, obj=None, **kwargs):
+        # Initialise the window
         super(HelpWindow, self).__init__(*args, **kwargs) 
         self.setupUi(self)
         self.but_close.clicked.connect(self.close_button_clicked)
         self.showMaximized()
     
     def close_button_clicked(self):
+        # Button to close the window
         self.close()
 
 class MeshWindow(QtWidgets.QMainWindow, Ui_Mesh):
@@ -974,6 +1167,7 @@ class MeshWindow(QtWidgets.QMainWindow, Ui_Mesh):
     A MeSH searching window appears, where the user can search for related terms
     """
     def __init__(self, *args, obj=None, **kwargs):
+        # Initialise the window
         super(MeshWindow, self).__init__(*args, **kwargs) 
         self.setupUi(self)
         self.but_search.clicked.connect(self.search_clicked)
@@ -981,6 +1175,7 @@ class MeshWindow(QtWidgets.QMainWindow, Ui_Mesh):
         init_errors(self)
     
     def search_clicked(self):
+        # Search for related terms
         text = self.lineEdit_user.text()
         df = pd.read_csv('data/synonyms.csv')
         df.fillna('', inplace=True)
@@ -1011,7 +1206,7 @@ class CustomWindow(QtWidgets.QMainWindow, Ui_Custom):
         c.execute("SELECT * FROM searches")
         variables = c.fetchall()                                    # Select all values from database
         data = pd.DataFrame(variables, columns = ['Search'])
-        self.model = TableModel(data)
+        self.model = TableModel(data)                               # Assign these values to the table
         self.table_results.setModel(self.model)
         self.table_results.resizeColumnsToContents()
         self.but_create.clicked.connect(self.create_button_clicked) # Connect create button to function
@@ -1025,10 +1220,10 @@ class CustomWindow(QtWidgets.QMainWindow, Ui_Custom):
         query = self.lineEdit_query.text()           # Extract query from lineEdit
         response = self.proceed.exec()
         if response == QMessageBox.StandardButton.Yes:
-            insert_search(query)
+            insert_search(query)                     # Add query to the database
             self.close()
         else:
-            self.lineEdit_query.clear()
+            self.lineEdit_query.clear()              # Clears the text entry to start again 
             self.lineEdit_query.setFocus()  
 
     def delete_button_clicked(self):
@@ -1042,10 +1237,10 @@ class CustomWindow(QtWidgets.QMainWindow, Ui_Custom):
         
         response = self.proceed.exec()
         if response == QMessageBox.StandardButton.Yes:
-            remove_search(data)
+            remove_search(data)                     # Removes the selected search for the custom list
             self.close()
         else:
-            self.lineEdit_query.clear()
+            self.lineEdit_query.clear()             # Clears the text entry to start again
             self.lineEdit_query.setFocus()  
 
     def insert_button_clicked(self):
@@ -1057,7 +1252,7 @@ class CustomWindow(QtWidgets.QMainWindow, Ui_Custom):
         for index in selected_items:
             data = self.table_results.model().data(index, role=Qt.ItemDataRole.DisplayRole)
         clipboard = QApplication.clipboard()
-        clipboard.setText(data)
+        clipboard.setText(data)                     # Copy custom search to clipboard
         self.close()
                  
 class VariablesWindow(QtWidgets.QMainWindow, Ui_Variables):
@@ -1092,10 +1287,10 @@ class VariablesWindow(QtWidgets.QMainWindow, Ui_Variables):
         query = self.lineEdit_query.text()           # Extract query from lineEdit
         response = self.proceed.exec()
         if response == QMessageBox.StandardButton.Yes:
-            insert_variable(variable, query)
+            insert_variable(variable, query)        # Insert variable with its query into database
             self.close()
         else:
-            self.lineEdit_var.clear()
+            self.lineEdit_var.clear()               # Clear entry boxes and try again
             self.lineEdit_query.clear()           
             self.lineEdit_var.setFocus()
 
@@ -1109,11 +1304,54 @@ class VariablesWindow(QtWidgets.QMainWindow, Ui_Variables):
             data = self.table_results.model().data(index, role=Qt.ItemDataRole.DisplayRole)      
         response = self.proceed.exec()
         if response == QMessageBox.StandardButton.Yes:
-            remove_variable(data)
+            remove_variable(data)                   # Removes selected variable from the database
             self.close()
         else:
-            self.lineEdit_query.clear()
+            self.lineEdit_query.clear()             # Clear entry boxes and try again
             self.lineEdit_query.setFocus() 
+
+class PreprocessCheckbox(QDialog):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle('Checkbox Popup')
+        layout = QVBoxLayout()  # Create layout
+
+        # Create checkboxes, with preprocessing options and default as checked
+        self.checkbox1 = QCheckBox('Drop Duplicates')
+        self.checkbox1.setChecked(True)
+        self.checkbox2 = QCheckBox('Drop Nulls')
+        self.checkbox2.setChecked(True)
+        self.checkbox3 = QCheckBox('Drop Negatives')
+        self.checkbox3.setChecked(True)
+        self.checkbox4 = QCheckBox('Drop Ambiguous')
+        self.checkbox4.setChecked(True)
+
+        # Add checkboxes to layout
+        layout.addWidget(self.checkbox1)
+        layout.addWidget(self.checkbox2)
+        layout.addWidget(self.checkbox3)
+        layout.addWidget(self.checkbox4)
+
+        # Add OK button
+        self.ok_button = QPushButton('OK')
+        self.ok_button.clicked.connect(self.close_popup)
+        layout.addWidget(self.ok_button)
+
+        # Set layout
+        self.setLayout(layout)
+
+    def close_popup(self):
+        # Emit accepted signal and close dialog
+        self.accept()
+
+    def get_checkbox_values(self):
+        # Return checkbox values
+        return (
+            self.checkbox1.isChecked(),
+            self.checkbox2.isChecked(),
+            self.checkbox3.isChecked(),
+            self.checkbox4.isChecked()
+        )
 
 # Execute the app
 app = QtWidgets.QApplication(sys.argv)

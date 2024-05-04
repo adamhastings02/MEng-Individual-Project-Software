@@ -1,68 +1,4 @@
 CRIS_No,Event_Key,Events_date,Modality,NHS_No,forenames,surname,DOB,Age_at_Exam,examination,examcd_name,Pat_Type,Site,referrer,referer_name,referal_source,refsrc_name,clinical_history,report_type,Report
-11111,123,01/01/2017,U,111 111 111,NICK,POPE,22/02/1945,72,UTHPY,US Thyroid & parathyroid,OP,LGI       ,C6026896,FRASER S,RR813,ST JAMES'S UNIVERSITY HOSPITAL,,N,"US Thyroid & parathyroid : 
-
-There is an 23 mm lesion situated posteriorly to the right mid pole of the thyroid. This corresponds with the parathyroid adenoma seen on SPECT CT.
-No other parathyroids seen.
-"
-22222,345,01/01/2016,U,222 222 222,CIARAN,CLARK,20/01/1934,81,UTHPY,US Thyroid & parathyroid,OP,SJH       ,C4617570,ABBAS A,RR813,ST JAMES'S UNIVERSITY HOSPITAL,"Primary hyperparathyroidism. CT SPECT suggests left inferior nodules needs further evaluation with ultrasound. ? parathyroid lesion. Many thanks.
-~(Information via Order Comms)",S,"Clinical History : 
-Primary hyperparathyroidism. CT SPECT suggests left inferior nodules needs further evaluation with ultrasound. ? parathyroid lesion. Many thanks.
- 
-"
-22222,345,01/01/2016,U,222 222 222,CIARAN,CLARK,12/12/1934,81,UTHPY,US Thyroid & parathyroid,OP,SJH       ,C4617570,ABBAS A,RR813,ST JAMES'S UNIVERSITY HOSPITAL,"Primary hyperparathyroidism. CT SPECT suggests left inferior nodules needs further evaluation with ultrasound. ? parathyroid lesion. Many thanks.
-~(Information via Order Comms)",N,"US Thyroid & parathyroid : 
-
-CT SPECT scan noted.
-The parathyroids could not be identified.
-
-Normal sized thyroid.  No convincing nodule seen within the left lobe.  In the right lobe at the level of the isthmus there are two anteriorly sited subcentimetre spongiform nodules with no internal vascularity (BTS U2 benign).
-No lymphadenopathy seen in either side of the neck.
-
-Conclusion: The two right inferior nodules seen on the SPECT/CT are not demonstrated on ultrasound and likely dilated veins. This patient likely has a single right superior parathyroid adenoma.
-
-Scanned and reported by B. Jones, Sonographer 
-
-Reported by Dr C Rosicky, Consultant Radiologist (Nuclear Medicine). 
-"
-3333,910,03/01/2018,U,333 333 333,JACOB,MURPHY,09/02/1973,45,UPTHY,US Parathyroid,OP,LGI       ,C4617570,ABBAS A,RR813,ST JAMES'S UNIVERSITY HOSPITAL,"Right sided nodule seen on CT and USS.
-High calcium
-Patient concerned about malignancy.
-? Interval change. ? any suspicious features.
-~(Information via Order Comms)",N,"US Parathyroid : 
-No parathyroid adenoma identified on ultrasound.
-"
-444,111,14/03/2014,U,444 444 444,MATT,RITCHIE,23/11/1952,62,UPTHY,US Parathyroid,GP,LGI       ,G9211876,MOSSAD MG,B86670,MADEUP SURGERY,"Raised parathormone
-~(Information via Order Comms)",S,"Clinical History : Raised parathormone
-"
-5555555,121,18/09/2014,U,555 555  555,STEVEN,TAYLOR,02/01/1952,62,UPTHY,US Parathyroid,GP,LGI       ,G9211876,MOSSAD MG,B86670,MADEUP SURGERY,"Raised parathormone
-~(Information via Order Comms)",N,"Findings:  This was a difficult examination.  In addition the patient was unable to lie flat and hyperextend the neck.The thyroid gland is of normal size but there are a number of a solid/cystic nodules throughout the gland.Colloid is identified in the largest nodule which is in the left lobe of the gland and measures 2.5 cm x 1.2 cm x 1.1 cm.  There is no convincing evidence of a parathyroid adenoma.  No significant lymphadenopathy was identified in either the right or left sides of the neck.
-
-Conclusion:  No parathyroid adenoma identified but this should be taken in the context that this was a difficult examination.  If there remains clinical concern a SPECT/CT scan can be considered.The appearances of the thyroid gland are benign in nature.
-"
-6666,134,05/05/2015,U,666 666 666,DWIGHT,GAYLE,19/02/1926,88,UTHPY,US Thyroid & parathyroid,IP,SJH       ,C6025031,SUTTON GM,RR813,ST JAMES'S UNIVERSITY HOSPITAL,"voice change. left throid enlargement weight loss ?mass
-~(Information via Order Comms)",S,"SUBJECTIVE:,  This 23-year-old white female presents with complaint of allergies.  She used to have allergies when she lived in Seattle but she thinks they are worse here.  In the past, she has tried Claritin, and Zyrtec.  Both worked for short time but then seemed to lose effectiveness.  She has used Allegra also.  She used that last summer and she began using it again two weeks ago.  It does not appear to be working very well.  She has used over-the-counter sprays but no prescription nasal sprays.  She does have asthma but doest not require daily medication for this and does not think it is flaring up.,MEDICATIONS: , Her only medication currently is Ortho Tri-Cyclen and the Allegra.,ALLERGIES: , She has no known medicine allergies.,OBJECTIVE:,Vitals:  Weight was 130 pounds and blood pressure 124/78.,HEENT:  Her throat was mildly erythematous without exudate.  Nasal mucosa was erythematous and swollen.  Only clear drainage was seen.  TMs were clear.,Neck:  Supple without adenopathy.,Lungs:  Clear.,ASSESSMENT:,  Allergic rhinitis.,PLAN:,1.  She will try Zyrtec instead of Allegra again.  Another option will be to use loratadine.  She does not think she has prescription coverage so that might be cheaper.,2.  Samples of Nasonex two sprays in each nostril given for three weeks.  A prescription was written as well.
-
-"
-7777,146,08/12/2015,U,777 777 777,PAUL,DUMMETT,23/12/1926,88,UTHPY,US Thyroid & parathyroid,IP,SJH       ,C6025031,SUTTON GM,RR813,ST JAMES'S UNIVERSITY HOSPITAL,"voice change. left throid enlargement weight loss ?mass
-~(Information via Order Comms)",N,"US Thyroid & parathyroid : The left lobe of thyroid is enlarged and heterogenous in echotexture.
-There are some small cystic colloid nodules throughout the thyroid (U2).
-No discrete masses identified.
-
-Appearances consistent with a multinodular goitre.
-
-Scanned & reported by Reporting Sonographer D Clayton.
-"
-8888,178,03/10/2016,U,888 888 888,GARY,SMITH,04/04/1970,46,UTHPY,US Thyroid & parathyroid,OP,LGI       ,C2710794,LANSDOWN MRJ,RR801,LEEDS GENERAL INFIRMARY,pre-op planining,S,"Clinical History : 
-pre-op planining
-
-US Thyroid & parathyroid : 
-Solitary right inferior parathyroid adenoma immediately below the inferior pole of the thyroid measuring up to 1.6 cm craniocaudally. A separate 5 mm nodule on the left abutting the superior pole of the thyroid has the appearance of a normal lymph node with a fatty hilum. No other candidate lesions.
-
-Impression: Solitary right inferior parathyroid adenoma. loperamide 
-
-Dr A Spec (Consultant Radiologist, GMC 1234567)
- 
-"
 2,994,23/04/2019,U,889 888 888,LISA,JOHNSON,06/12/1958,60,UTHPY,US Thyroid & parathyroid,OP,LGI       ,C2710795,LANSDOWN MRJ,RR802,LEEDS GENERAL INFIRMARY,pre-op planining,S,"The ultrasound of the thyroid gland reveals a solitary hypoechoic nodule measuring 1.4 cm in the right lobe, with irregular margins and increased internal vascularity. Additionally, diffuse heterogeneous echotexture is noted in the surrounding thyroid tissue."
 3,537,18/06/2018,U,890 888 888,DAVID,WILLIAMS,09/08/1964,53,UTHPY,US Thyroid & parathyroid,OP,LGI       ,C2710796,LANSDOWN MRJ,RR803,LEEDS GENERAL INFIRMARY,pre-op planining,S,"Ultrasound evaluation of the thyroid gland demonstrates multiple nodules bilaterally. The largest nodule, measuring 1.8 cm in the left lobe, displays a hypoechoic appearance with microcalcifications. The right lobe appears normal, with no significant abnormalities detected."
 4,692,10/10/2013,U,891 888 888,SARAH,BROWN,15/02/1989,24,UTHPY,US Thyroid & parathyroid,OP,LGI       ,C2710797,LANSDOWN MRJ,RR804,LEEDS GENERAL INFIRMARY,pre-op planining,S,"The thyroid gland appears diffusely enlarged with heterogeneous echotexture. Increased vascularity is observed on Doppler imaging, suggesting a possible inflammatory process such as thyroiditis."
@@ -121,5 +57,5 @@ Dr A Spec (Consultant Radiologist, GMC 1234567)
 57,977,04/10/2019,U,944 888 888,BRITTANY,CAMPBELL,20/10/1955,64,UTHPY,US Thyroid & parathyroid,OP,LGI       ,C2710850,LANSDOWN MRJ,RR857,LEEDS GENERAL INFIRMARY,pre-op planining,S,"The patient has a history of thyroid surgery. Ultrasound evaluation of the neck demonstrates absence of thyroid tissue. No residual nodules or abnormal lymph nodes are visualized. These findings are consistent with the patient's post-surgical status, indicating a successful thyroid surgery without evidence of residual disease."
 58,630,19/07/2018,U,945 888 888,JORDAN,EVANS,02/03/1981,37,UTHPY,US Thyroid & parathyroid,OP,LGI       ,C2710851,LANSDOWN MRJ,RR858,LEEDS GENERAL INFIRMARY,pre-op planining,S,Ultrasound examination of the neck and thyroid gland in a patient with a history of thyroid surgery reveals a solitary solid nodule measuring 1.6 cm in the left lobe. The nodule exhibits hypoechoic echotexture with irregular margins and increased internal vascularity. No abnormal lymph nodes are observed. Fine-needle aspiration and clinical correlation are recommended to determine the nature of the nodule and exclude recurrence.
 59,398,27/01/2021,U,946 888 888,JESSICA,PARKER,09/11/1969,51,UTHPY,US Thyroid & parathyroid,OP,LGI       ,C2710852,LANSDOWN MRJ,RR859,LEEDS GENERAL INFIRMARY,pre-op planining,S,"The patient underwent total thyroidectomy previously. Ultrasound evaluation of the neck shows absence of thyroid tissue. No residual tissue and no abnormal lymph nodes are identified. These findings are consistent with the patient's post-surgical status, indicating successful removal of the thyroid gland without evidence of residual disease."
-60,734,12/08/2020,U,947 888 888,ALEXIS,MORRIS,04/05/1987,33,UTHPY,US Thyroid & parathyroid,OP,LGI       ,C2710853,LANSDOWN MRJ,RR860,LEEDS GENERAL INFIRMARY,pre-op planining,S,"Ultrasound examination of the thyroid and parathyroid glands reveals a normal-sized thyroid with homogeneous echotexture and no significant nodules. Additionally, a parathyroid adenoma measuring 1.2 cm is identified adjacent to the lower pole of the right thyroid lobe. The adenoma exhibits isoechoic echotexture and well-defined margins. No abnormal lymph nodes are observed in the neck. Further evaluation with parathyroid hormone (PTH) levels and consultation with an endocrinologist is recommended to assess parathyroid function and determine appropriate management."
-61,884,05/03/2018,U,948 888 888,JASON,JAMES,17/09/1972,45,UTHPY,US Thyroid & parathyroid,OP,LGI       ,C2710854,LANSDOWN MRJ,RR861,LEEDS GENERAL INFIRMARY,pre-op planining,S,"The thyroid ultrasound demonstrates a normal-sized thyroid gland with homogeneous echotexture and no significant nodules. In the lower pole of the left thyroid lobe, an incidental parathyroid adenoma measuring 1.4 cm is detected. The adenoma exhibits hypoechoic echotexture and well-defined margins. No abnormal lymph nodes are identified in the neck. Given the incidental finding of the parathyroid adenoma, referral to an endocrinologist for further evaluation, including calcium and parathyroid hormone (PTH) levels, is recommended to assess parathyroid function and determine the need for intervention."
+60,734,12/08/2020,U,947 888 888,ALEXIS,MORRIS,04/25/1987,33,UTHPY,US Thyroid & parathyroid,OP,LGI       ,C2710853,LANSDOWN MRJ,RR860,LEEDS GENERAL INFIRMARY,pre-op planining,S,"Ultrasound examination of the thyroid and parathyroid glands reveals a normal-sized thyroid with homogeneous echotexture and no significant nodules. Additionally, a parathyroid adenoma measuring 1.2 cm is identified adjacent to the lower pole of the right thyroid lobe. The adenoma exhibits isoechoic echotexture and well-defined margins. No abnormal lymph nodes are observed in the neck. Further evaluation with parathyroid hormone (PTH) levels and consultation with an endocrinologist is recommended to assess parathyroid function and determine appropriate management."
+61,884,05/27/2018,U,948 888 888,JASON,JAMES,17/09/1972,45,UTHPY,US Thyroid & parathyroid,OP,LGI       ,C2710854,LANSDOWN MRJ,RR861,LEEDS GENERAL INFIRMARY,pre-op planining,S,"The thyroid ultrasound demonstrates a normal-sized thyroid gland with homogeneous echotexture and no significant nodules. In the lower pole of the left thyroid lobe, an incidental parathyroid adenoma measuring 1.4 cm is detected. The adenoma exhibits hypoechoic echotexture and well-defined margins. No abnormal lymph nodes are identified in the neck. Given the incidental finding of the parathyroid adenoma, referral to an endocrinologist for further evaluation, including calcium and parathyroid hormone (PTH) levels, is recommended to assess parathyroid function and determine the need for intervention."

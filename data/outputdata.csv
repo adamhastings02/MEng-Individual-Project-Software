@@ -1,3 +1,1 @@
-CRIS_No,Event_Key,Events_date,Modality,NHS_No,forenames,surname,DOB,Age_at_Exam,examination,examcd_name,Pat_Type,Site,referrer,referer_name,referal_source,refsrc_name,clinical_history,report_type,Report
-7777,146,08/12/2015,U,777 777 777,PAUL,DUMMETT,23/12/1926,88,UTHPY,US Thyroid & parathyroid,IP,SJH       ,C6025031,SUTTON GM,RR813,ST JAMES'S UNIVERSITY HOSPITAL,"voice change. left throid enlargement weight loss ?mass
-~(Information via Order Comms)",N,us thyroid parathyroid the left lobe of thyroid is enlarged and heterogenous in echotexture. there are some small cystic colloid nodules throughout the thyroid u2. no discrete masses identified. appearances consistent with a multinodular goitre. scanned reported by reporting sonographer d clayton. 
+CRIS_No,Event_Key,Events_date,Modality,NHS_No,forenames,surname,DOB,Age_at_Exam,examination,examcd_name,Pat_Type,Site,referrer,referer_name,referal_source,refsrc_name,clinical_history,report_type,Report,Approval_status

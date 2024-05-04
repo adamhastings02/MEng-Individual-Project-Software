@@ -596,7 +596,7 @@
      <rect>
       <x>180</x>
       <y>230</y>
-      <width>93</width>
+      <width>101</width>
       <height>28</height>
      </rect>
     </property>
@@ -615,9 +615,9 @@
    <widget class="QPushButton" name="but_custom">
     <property name="geometry">
      <rect>
-      <x>340</x>
+      <x>322</x>
       <y>230</y>
-      <width>93</width>
+      <width>111</width>
       <height>28</height>
      </rect>
     </property>
@@ -970,7 +970,7 @@
      <rect>
       <x>30</x>
       <y>230</y>
-      <width>93</width>
+      <width>111</width>
       <height>28</height>
      </rect>
     </property>
@@ -980,7 +980,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Filtering</string>
+     <string>Preview Data</string>
     </property>
    </widget>
    <widget class="QPushButton" name="but_performance">
@@ -1056,6 +1056,24 @@
     </property>
     <property name="text">
      <string>View Original</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="but_prepro">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>270</y>
+      <width>181</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Preprocessing Options</string>
     </property>
    </widget>
   </widget>

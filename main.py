@@ -81,6 +81,8 @@ def box_clear(self):
     self.comboBox.setCurrentText("Select")              # Reset the dataset
     self.dateCombo.setCurrentText("No Date Filtering")  # Reset the date option
     self.dateEdit.setDate(QDate.currentDate())          # Reset the date
+    self.indicator_led.setValue(0)                      # Turn off LED indicator
+
 
 def init_errors(self):
     """
@@ -590,6 +592,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         result = results[results['CRIS_No'] == int(data)]           
         a = (result["term_found_matches"])                          
         value = result['Report']
+        processed = value
         b = a.iloc[0]
         text = value.iloc[0]
         self.textEdit.setText(text)
@@ -686,6 +689,72 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         words = text.split()
         num_words = len(words)
         lengths_times.append((num_words,elapsed_time))
+
+        # Alight the certainty LED
+        selected_items = self.table_results.selectedIndexes()
+        selected_dataset = self.comboBox.currentText()
+        for index in selected_items:
+            # Get the row and column index of each selected cell
+            row = index.row()                                   # Retrieve the row of selected record
+            column = index.column()                             # Retrieve column of the selected record
+            if column != 0:                                     # If it isnt column zero, present an error
+                self.index_error.exec()
+                return
+            else:    
+                # Get the data of the selected cell and proceed
+                data = self.table_results.model().data(index, role=Qt.ItemDataRole.DisplayRole)
+        file_path = selected_dataset
+        df_data0 = pd.read_csv('data/'+file_path)
+        df_data0.fillna('', inplace=True)
+        
+        result = expr.parse_string(man)
+        barry = result
+        results = df_search(df_data0, result)                             
+        result = results[results['CRIS_No'] == int(data)]           
+        a = (result["term_found_matches"])                          
+        value = result['Report']
+        b = a.iloc[0]
+        text = value.iloc[0]
+        matches = []
+        word = []
+        for i in b.values():
+            list_of_tuples = i[1]
+            for item in list_of_tuples:
+                matches.append(item)
+        for key, value in b.items():
+            term = [item[0] for item in value[1]]
+            word.extend(term)
+        unique_words = list(set(word))
+        flag = 0
+        x2 = processed.iloc[0]
+        if preprocess[2] == True:
+            for x3 in unique_words:
+                if x3 not in text and x3 not in x2:
+                    flag = 0
+                    break
+                elif x3 in text and x3 not in x2:
+                    flag = 1
+                    break
+                elif x3 in text:
+                    try:
+                        idx = text.split().index(x3)  # Find the index of x3 in text
+                        if idx >= 3:
+                            words_before = text.split()[idx - 3:idx]
+                            # Check if any word is 'no' or 'No'
+                            if any(word.lower() == 'no' for word in words_before):
+                                flag = 2
+                                break
+                    except ValueError:
+                        flag = 2                     
+        if flag == 1:
+            self.indicator_led.setValue(100)
+            self.indicator_led.setStyleSheet("QProgressBar::chunk { background-color: red; }")
+        elif flag == 2:
+            self.indicator_led.setValue(100)
+            self.indicator_led.setStyleSheet("QProgressBar::chunk { background-color: orange; }")
+        else:
+            self.indicator_led.setValue(100)
+            self.indicator_led.setStyleSheet("QProgressBar::chunk { background-color: green; }")      
    
     def help_button_clicked(self):
         self.help = HelpWindow()
@@ -868,7 +937,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         ax2.scatter(x_values, y_values, color='b', label='Data')
         coefficients_1 = np.polyfit(x_values, y_values, 1)  # Fit a first-degree polynomial (line)
         poly_1 = np.poly1d(coefficients_1)
-        ax2.plot(np.unique(x_values), poly_1(np.unique(x_values)), color='r', label='Line of Best Fit')
+        ax2.plot(np.unique(x_values), poly_1(np.unique(x_values)), color='r', label='Average')
         # Add labels and title
         ax2.set_xlabel('Number of words in report transcript')
         ax2.set_ylabel('Time taken for record expansion (s)')

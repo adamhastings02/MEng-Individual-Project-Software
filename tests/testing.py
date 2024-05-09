@@ -1,27 +1,39 @@
-import pandas as pd
-import re
+from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QVBoxLayout, QProgressBar, QWidget
 
-# Sample DataFrame with dates in MM/DD/YYYY format
-data = {'Date': ['12/31/2022', '03/15/2023', '07/04/2024', '11/05/2025']}
-df = pd.DataFrame(data)
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Progress Bar Color")
+        self.setGeometry(100, 100, 400, 200)
 
-# Function to convert dates from MM/DD/YYYY to DD/MM/YYYY if the day part is between 13 and 31
-def convert_date(date_str):
-    # Regular expression to match MM/DD/YYYY format
-    mm_dd_yyyy_pattern = r'(\d{2})/(\d{2})/(\d{4})'
-    # Check if the date matches MM/DD/YYYY format
-    if re.match(mm_dd_yyyy_pattern, date_str):
-        # If it matches, extract month, day, and year
-        month, day, year = re.match(mm_dd_yyyy_pattern, date_str).groups()
-        # Check if the day part is between 13 and 31
-        if 13 <= int(day) <= 31:
-            # Return the date in DD/MM/YYYY format
-            return f'{day}/{month}/{year}'
-    # If the date does not match the condition, return as is
-    return date_str
+        # Create a central widget and layout
+        central_widget = QWidget()
+        self.setCentralWidget(central_widget)
+        layout = QVBoxLayout(central_widget)
 
-# Apply the conversion function to the Date column
-df['Date'] = df['Date'].apply(convert_date)
+        # Create buttons
+        self.green_button = QPushButton("Green", self)
+        self.green_button.clicked.connect(self.set_progress_green)
+        layout.addWidget(self.green_button)
 
-# Display the DataFrame with converted dates
-print(df)
+        self.red_button = QPushButton("Red", self)
+        self.red_button.clicked.connect(self.set_progress_red)
+        layout.addWidget(self.red_button)
+
+        # Create a progress bar
+        self.progress_bar = QProgressBar(self)
+        layout.addWidget(self.progress_bar)
+
+    def set_progress_green(self):
+        self.progress_bar.setValue(100)
+        self.progress_bar.setStyleSheet("QProgressBar::chunk { background-color: green; }")
+
+    def set_progress_red(self):
+        self.progress_bar.setValue(100)
+        self.progress_bar.setStyleSheet("QProgressBar::chunk { background-color: red; }")
+
+if __name__ == "__main__":
+    app = QApplication([])
+    window = MainWindow()
+    window.show()
+    app.exec()

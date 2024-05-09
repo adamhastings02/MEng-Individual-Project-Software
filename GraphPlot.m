@@ -14,7 +14,7 @@ clear;
 % Generate x values
 x = 60:60:1120;
 
-% Example y values
+% Y values
 y = [1.61,1.84,2.26,2.96,3.56,4.19,4.55,5.39,5.85,6.24,6.88,7.39,7.80,8.47,9.06,9.63,10.37,10.98];
 
 % Plot the inductor current curve
